@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MoneyManager</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="money_left">Money Left:</string>
+    <string name="until">Until:</string>
+
+    <string name="planner_fragment_title">Planner</string>
+    <string name="transaction_fragment_title">Transactions</string>
+</resources>
