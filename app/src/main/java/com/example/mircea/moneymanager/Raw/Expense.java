@@ -8,11 +8,11 @@ public class Expense {
     private Drawable expenseIcon;
     private String expenseName;
     private float expenseBudget;
-    private Color expenseColor;
+    private int expenseColor;
 
     public Expense(){}
 
-    public Expense(Drawable expenseIcon, String expenseName, float expenseBudget, Color expenseColor){
+    public Expense(Drawable expenseIcon, String expenseName, float expenseBudget, int expenseColor){
 
         this.expenseIcon = expenseIcon;
         this.expenseName = expenseName;
@@ -32,7 +32,7 @@ public class Expense {
 
     public void setExpenseBudget(float expenseBudget) {this.expenseBudget = expenseBudget;}
 
-    public Color getExpenseColor() {return expenseColor;}
+    public int getExpenseColor() {return expenseColor;}
 
-    public void setExpenseColor(Color expenseColor) {this.expenseColor = expenseColor;}
+    public void setExpenseColor(int expenseColor) {this.expenseColor = expenseColor;}
 }

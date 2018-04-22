@@ -1,16 +1,32 @@
 package com.example.mircea.moneymanager.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
 
+import com.example.mircea.moneymanager.Adapters.ExpenseListAdapter;
 import com.example.mircea.moneymanager.R;
+import com.example.mircea.moneymanager.Raw.Expense;
+
+import java.util.ArrayList;
 
 public class CreatePlanExpenses extends AppCompatActivity {
 
+    //List Stuff
+    private ExpenseListAdapter expenseArrayAdapter;
+    private ArrayList<Expense> expenseArrayList;
+
+    //Ui
     private Button goToSavingsButton;
+    private ListView expensesList;
+    private FloatingActionButton addExpenseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +40,38 @@ public class CreatePlanExpenses extends AppCompatActivity {
 
         goToSavingsButton = findViewById(R.id.goToSavingsButton);
         goToSavingsButton.setOnClickListener((View v) -> goToSavings());
+
+        expensesList = findViewById(R.id.expensesList);
+        setupList();
+
+        addExpenseButton = findViewById(R.id.addExpense);
+        addExpenseButton.setOnClickListener((View v) -> addExpense());
+    }
+
+    private void setupList() {
+
+        expenseArrayList = new ArrayList<>();
+
+        populateInitialExpenses();
+
+        expenseArrayAdapter = new ExpenseListAdapter(expenseArrayList, getApplicationContext());
+
+        expensesList.setAdapter(expenseArrayAdapter);
+    }
+
+    private void addExpense() {
+
+        expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f, Color.BLACK));
+        expenseArrayAdapter.notifyDataSetChanged();
+
+        Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show();
+    }
+
+    private void populateInitialExpenses() {
+
+        expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f, Color.RED));
+        expenseArrayList.add(new Expense(getDrawable(R.drawable.house_icon), "House", 0f, Color.BLUE));
+        expenseArrayList.add(new Expense(getDrawable(R.drawable.food_icon), "Food", 0f, Color.BLACK));
     }
 
     private void goToSavings() {
