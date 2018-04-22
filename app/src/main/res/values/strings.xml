@@ -5,10 +5,25 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_wallet">Wallet</string>
 
     <string name="money_left">Money Left:</string>
     <string name="until">Until:</string>
 
     <string name="planner_fragment_title">Planner</string>
     <string name="transaction_fragment_title">Transactions</string>
+
+    <string name="create_budget_plan">Create Budget Plan</string>
+    <string name="budget">Budget:</string>
+    <string name="currency">Currency:</string>
+    <string name="color">Color:</string>
+
+    <string name="pay_day">When do you get paid?</string>
+    <string name="placeholder">Placeholder</string>
+
+    <string name="go_to_expenses">Go to Expenses</string>
+    <string name="go_to_savings">Go to Savings</string>
+    <string name="create_plan">Create Plan</string>
+
+
 </resources>

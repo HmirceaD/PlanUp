@@ -1,5 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-</RelativeLayout>
+    <ImageButton
+        android:id="@+id/expenseIcon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="#FFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/expenseName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/expenseIcon"
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@+id/expenseIcon"
+        android:text="@string/placeholder"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toEndOf="@+id/expenseIcon"
+        app:layout_constraintTop_toTopOf="@+id/expenseIcon" />
+
+    <TextView
+        android:id="@+id/expenseBudgetTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/budget"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/expenseIcon" />
+
+    <EditText
+        android:id="@+id/expenseBudget"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toBottomOf="@+id/expenseBudgetTextView"
+        app:layout_constraintStart_toEndOf="@+id/expenseBudgetTextView"
+        app:layout_constraintTop_toTopOf="@+id/expenseBudgetTextView"
+        app:layout_constraintVertical_bias="0.685" />
+
+    <TextView
+        android:id="@+id/expenseColorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/color"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toBottomOf="@+id/expenseBudget"
+        app:layout_constraintStart_toEndOf="@+id/expenseBudget"
+        app:layout_constraintTop_toTopOf="@+id/expenseBudget" />
+
+    <ImageButton
+        android:id="@+id/expenseColor"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="#FFF"
+        app:layout_constraintBottom_toBottomOf="@+id/expenseColorTextView"
+        app:layout_constraintStart_toEndOf="@+id/expenseColorTextView"
+        app:layout_constraintTop_toTopOf="@+id/expenseColorTextView"
+        app:srcCompat="@android:color/black" />
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:background="#FFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/x_icon" />
+</android.support.constraint.ConstraintLayout>
