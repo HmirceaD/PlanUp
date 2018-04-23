@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -25,12 +26,10 @@ import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.Expense;
 
 import java.util.ArrayList;
-
+import java.util.jar.Attributes;
 
 
 public class ExpenseListAdapter extends ArrayAdapter<Expense> {
-
-    //TODO(7) FINISH THIS
 
     private static int[] iconsListId;
     private static int[] iconListDrawable;
@@ -102,7 +101,7 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
         viewHolder.expenseIcon.setOnClickListener((View v) -> changeIcon(viewHolder, position));
 
         viewHolder.expenseName.setText(expense.getExpenseName());
-        viewHolder.expenseName.setOnFocusChangeListener(new NameFocusChange());
+        viewHolder.expenseName.setOnFocusChangeListener(new NameFocusChange(position, viewHolder.expenseName));
 
         viewHolder.expenseBudget.setText("");
 
@@ -178,13 +177,21 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
     private class NameFocusChange implements View.OnFocusChangeListener{
 
+        private int pos;
+        private EditText name;
+
+        public NameFocusChange(int position, EditText name){
+
+            this.pos = position;
+            this.name = name;
+        }
+
         @Override
         public void onFocusChange(View view, boolean b) {
 
             if(!b){
-                //TODO(8) make this work
-
-                Toast.makeText(mContext, "COaie", Toast.LENGTH_SHORT).show();
+                /**Changes the name of the expense**/
+                expenseArrayList.get(pos).setExpenseName(name.getText().toString());
             }
         }
     }
@@ -192,12 +199,22 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
     public void deletePost(int position, View v){
         /*Delete the post int the list*/
 
-        //TODO works but i shoud let keyboard down
-        v.requestFocus();
+        if(v.hasFocus()){
+            v.requestFocus();
+            v.clearFocus();
 
-        expenseArrayList.remove(position);
-        notifyDataSetChanged();
-        notifyDataSetInvalidated();
+            expenseArrayList.remove(position);
+            notifyDataSetChanged();
+            notifyDataSetInvalidated();
+
+            /**Kills keyboard**/
+            if (v != null) {
+                InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+           }
+
+        }
+
     }
 
     @Override

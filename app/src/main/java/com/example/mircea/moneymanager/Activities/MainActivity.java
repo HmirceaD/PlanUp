@@ -22,7 +22,6 @@ import com.example.mircea.moneymanager.R;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    //TODO override action bar
     //Ui
     private ViewPager viewPager;
     private TabLayout tabLayout;
