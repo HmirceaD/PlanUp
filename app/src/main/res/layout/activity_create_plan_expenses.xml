@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.mircea.moneymanager.Activities.CreatePlanExpenses"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:background="#FFF">
 
     <android.support.design.widget.FloatingActionButton

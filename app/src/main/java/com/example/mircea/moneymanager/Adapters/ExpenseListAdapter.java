@@ -83,7 +83,7 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
             viewHolder.expenseBudget = convertView.findViewById(R.id.expenseBudget);
             viewHolder.expenseColor = convertView.findViewById(R.id.expenseColor);
             viewHolder.expenseDelete = convertView.findViewById(R.id.expenseDelete);
-            viewHolder.expenseDelete.setOnClickListener((View v) -> deletePost(position));
+            viewHolder.expenseDelete.setOnClickListener((View v) -> deletePost(position, viewHolder.expenseDelete));
 
 
             convertView.setTag(viewHolder);
@@ -110,7 +110,7 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
         viewHolder.expenseColor.setOnClickListener((View v) -> changeColor(viewHolder, position));
 
         viewHolder.expenseDelete.setImageResource(R.drawable.x_icon);
-        viewHolder.expenseDelete.setOnClickListener((View v) -> deletePost(position));
+        viewHolder.expenseDelete.setOnClickListener((View v) -> deletePost(position, viewHolder.expenseDelete));
 
         return convertView;
     }
@@ -183,13 +183,17 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
             if(!b){
                 //TODO(8) make this work
+
                 Toast.makeText(mContext, "COaie", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    public void deletePost(int position){
+    public void deletePost(int position, View v){
         /*Delete the post int the list*/
+
+        //TODO works but i shoud let keyboard down
+        v.requestFocus();
 
         expenseArrayList.remove(position);
         notifyDataSetChanged();

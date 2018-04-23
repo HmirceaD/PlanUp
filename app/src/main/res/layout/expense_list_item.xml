@@ -48,6 +48,7 @@
     <EditText
         android:id="@+id/expenseBudget"
         android:layout_width="100dp"
+
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
@@ -88,6 +89,8 @@
         android:id="@+id/expenseDelete"
         android:layout_width="75dp"
         android:layout_height="50dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         android:background="#FFF"
