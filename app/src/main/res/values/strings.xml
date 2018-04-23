@@ -25,5 +25,16 @@
     <string name="go_to_savings">Go to Savings</string>
     <string name="create_plan">Create Plan</string>
 
+    <string name="add_savings_plan">Add Savings Plan</string>
+    <string name="savings_goal">Savings Goal:</string>
+    <string name="add_wish">Add Wish</string>
+    <string name="current_wish">Current Wish:</string>
+
+    <string name="expense">Expense</string>
+
+
+
+
+
 
 </resources>

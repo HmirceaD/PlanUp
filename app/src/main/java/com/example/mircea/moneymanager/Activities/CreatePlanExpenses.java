@@ -62,16 +62,17 @@ public class CreatePlanExpenses extends AppCompatActivity {
     private void addExpense() {
 
         expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f, Color.BLACK));
-        expenseArrayAdapter.notifyDataSetChanged();
+        //expenseArrayAdapter.notifyDataSetChanged();
+        expensesList.setAdapter(expenseArrayAdapter);
 
         Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show();
     }
 
     private void populateInitialExpenses() {
 
-        expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f, Color.RED));
+        expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f, Color.BLACK));
         expenseArrayList.add(new Expense(getDrawable(R.drawable.house_icon), "House", 0f, Color.BLUE));
-        expenseArrayList.add(new Expense(getDrawable(R.drawable.food_icon), "Food", 0f, Color.BLACK));
+        expenseArrayList.add(new Expense(getDrawable(R.drawable.food_icon), "Food", 0f, Color.RED));
     }
 
     private void goToSavings() {
