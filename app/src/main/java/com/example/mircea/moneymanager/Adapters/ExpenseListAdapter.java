@@ -200,6 +200,7 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
         /*Delete the post int the list*/
 
         if(v.hasFocus()){
+            //TODO do this for all actions in activity
             v.requestFocus();
             v.clearFocus();
 

@@ -9,13 +9,18 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.mircea.moneymanager.Adapters.ExpenseListAdapter;
 import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.Expense;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 
 public class CreatePlanExpenses extends AppCompatActivity {
 
@@ -47,6 +52,8 @@ public class CreatePlanExpenses extends AppCompatActivity {
         addExpenseButton = findViewById(R.id.addExpense);
         addExpenseButton.setOnClickListener((View v) -> addExpense());
     }
+
+
 
     private void setupList() {
 

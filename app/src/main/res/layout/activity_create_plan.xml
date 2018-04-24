@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="114dp"
         android:text="@string/budget"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,48 +30,51 @@
 
     <EditText
         android:id="@+id/budgetEditText"
-        android:layout_width="100dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:ems="10"
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/budgetTextView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/budgetTextView"
-        app:layout_constraintTop_toTopOf="@+id/budgetTextView" />
+        app:layout_constraintTop_toTopOf="@+id/budgetTextView"
+        app:layout_constraintVertical_bias="0.6" />
 
     <TextView
         android:id="@+id/currencyTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
         android:text="@string/currency"
-        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-        app:layout_constraintBottom_toBottomOf="@+id/budgetEditText"
-        app:layout_constraintStart_toEndOf="@+id/budgetEditText"
-        app:layout_constraintTop_toTopOf="@+id/budgetEditText" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/budgetTextView" />
 
-    <Spinner
+    <org.angmarch.views.NiceSpinner
         android:id="@+id/currencySpinner"
-        android:layout_width="75dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/currencyTextView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/currencyTextView"
         app:layout_constraintTop_toTopOf="@+id/currencyTextView" />
 
     <TextView
-        android:id="@+id/paidTextView"
+        android:id="@+id/startPlanTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/pay_day"
+        android:layout_marginTop="36dp"
+        android:text="@string/start_plan"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/budgetTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/currencyTextView" />
 
     <Button
         android:id="@+id/goToExpenses"
@@ -87,17 +90,51 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/paidTextView"
+        app:layout_constraintTop_toBottomOf="@+id/startPlanTextView"
         app:layout_constraintVertical_bias="1.0" />
 
-    <Spinner
-        android:id="@+id/dateSpinner"
-        android:layout_width="75dp"
+    <TextView
+        android:id="@+id/startPlanDate"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/paidTextView"
-        app:layout_constraintStart_toEndOf="@+id/paidTextView"
-        app:layout_constraintTop_toTopOf="@+id/paidTextView" />
+        android:clickable="true"
+        android:ems="10"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toBottomOf="@+id/startPlanTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/startPlanTextView"
+        app:layout_constraintTop_toTopOf="@+id/startPlanTextView"
+        app:layout_constraintVertical_bias="0.6" />
+
+    <TextView
+        android:id="@+id/endPlanTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:text="@string/end_plan"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startPlanTextView" />
+
+    <TextView
+        android:id="@+id/endPlanDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:ems="10"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toBottomOf="@+id/endPlanTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toEndOf="@+id/endPlanTextView"
+        app:layout_constraintTop_toTopOf="@+id/endPlanTextView"
+        app:layout_constraintVertical_bias="0.6" />
 
 </android.support.constraint.ConstraintLayout>
