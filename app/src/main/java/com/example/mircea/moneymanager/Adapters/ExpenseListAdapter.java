@@ -209,10 +209,9 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
             notifyDataSetInvalidated();
 
             /**Kills keyboard**/
-            if (v != null) {
+
                 InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-           }
 
         }
 

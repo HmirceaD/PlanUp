@@ -22,9 +22,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="114dp"
+        android:layout_marginTop="100dp"
         android:text="@string/budget"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textSize="22sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createBudgetTextView" />
 
@@ -49,7 +50,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="36dp"
         android:text="@string/currency"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textSize="22sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/budgetTextView" />
 
@@ -72,7 +74,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="36dp"
         android:text="@string/start_plan"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textSize="22sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currencyTextView" />
 
@@ -116,7 +119,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="36dp"
         android:text="@string/end_plan"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textSize="22sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/startPlanTextView" />
 

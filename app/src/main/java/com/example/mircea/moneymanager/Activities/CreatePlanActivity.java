@@ -21,6 +21,7 @@ import org.angmarch.views.NiceSpinner;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -55,14 +56,21 @@ public class CreatePlanActivity extends AppCompatActivity {
         goToExpensesButton = findViewById(R.id.goToExpenses);
         goToExpensesButton.setOnClickListener((View v) -> goToExpenses());
 
-        startPlanDate = findViewById(R.id.startPlanDate);
-        startPlanDate.setOnClickListener((View v) -> showDateDialog(startPlanDate));
-
-        endPlanDate = findViewById(R.id.endPlanDate);
-        endPlanDate.setOnClickListener((View v) -> showDateDialog(endPlanDate));
+        initDateText();
 
         currencySpinner = findViewById(R.id.currencySpinner);
         setupSpinner();
+    }
+
+    private void initDateText() {
+        /**Initializes the date textviews with the start and end of the plan dates**/
+        startPlanDate = findViewById(R.id.startPlanDate);
+        updateTextView(myCalendar.getTime(), startPlanDate);
+        startPlanDate.setOnClickListener((View v) -> showDateDialog(startPlanDate));
+
+        endPlanDate = findViewById(R.id.endPlanDate);
+        updateTextView(myCalendar.getTime(), endPlanDate);
+        endPlanDate.setOnClickListener((View v) -> showDateDialog(endPlanDate));
     }
 
     private void showDateDialog(TextView textView) {
@@ -87,6 +95,14 @@ public class CreatePlanActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), CreatePlanExpenses.class));
     }
 
+    private void updateTextView(Date date, TextView dateTextView) {
+        //TODO make this a lil nicer
+        String myFormat = "E/dd/MM/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+
+        dateTextView.setText(sdf.format(date));
+    }
+
     private class DatePickerListener implements DatePickerDialog.OnDateSetListener{
 
         private TextView dateTextView;
@@ -101,15 +117,9 @@ public class CreatePlanActivity extends AppCompatActivity {
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, month);
             myCalendar.set(Calendar.DAY_OF_MONTH, day);
-            updateTextView();
+            updateTextView(myCalendar.getTime(), dateTextView);
         }
 
-        private void updateTextView() {
-            //TODO make this a lil nicer
-            String myFormat = "dd/MM/yy"; //In which you need put here
-            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.CANADA);
 
-            dateTextView.setText(sdf.format(myCalendar.getTime()));
-        }
     }
 }

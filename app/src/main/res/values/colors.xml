@@ -2,6 +2,8 @@
 <resources>
     <color name="colorPrimary">#16E145</color>
     <color name="colorPrimaryDark">#10A834</color>
-    <color name="colorAccent">#08B592</color>
+    <color name="colorAccent">#08b592</color>
+
+    <color name="cancelButton">#FF5450</color>
 
 </resources>

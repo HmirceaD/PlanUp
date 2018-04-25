@@ -31,9 +31,16 @@
     <string name="current_wish">Current Wish:</string>
 
     <string name="expense">Expense</string>
+    <string name="cancel">Cancel</string>
 
     <string name="start_plan">Start of the Plan:</string>
     <string name="end_plan">End of the Plan:</string>
+
+    <string name="create_wish">Create a wish</string>
+
+    <string name="ex_wish_name">E.g. Trip to Chernobyl</string>
+    <string name="ex_wish_desc">Radiation is nice this time of year</string>
+
 
     <string-array name="currency_array">
         <item>RON</item>

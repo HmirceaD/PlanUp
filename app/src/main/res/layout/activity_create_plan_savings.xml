@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/addSavingsPlanTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -32,29 +32,30 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/savingGoalTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:text="@string/savings_goal"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textSize="22sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/addSavingsPlanTextView" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/savingsSavingEditText"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintBottom_toBottomOf="@+id/textView3"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toTopOf="@+id/textView3" />
+        app:layout_constraintBottom_toBottomOf="@+id/savingGoalTextView"
+        app:layout_constraintStart_toEndOf="@+id/savingGoalTextView"
+        app:layout_constraintTop_toTopOf="@+id/savingGoalTextView" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/savingsAddWishButton"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -65,18 +66,19 @@
         android:textColor="#FFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/savingGoalTextView" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/currentWishTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:text="@string/current_wish"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="@+id/button"
-        app:layout_constraintStart_toStartOf="@+id/button"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="@+id/savingsAddWishButton"
+        app:layout_constraintStart_toStartOf="@+id/savingsAddWishButton"
+        app:layout_constraintTop_toBottomOf="@+id/savingsAddWishButton" />
 </android.support.constraint.ConstraintLayout>
