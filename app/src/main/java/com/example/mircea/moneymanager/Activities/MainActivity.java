@@ -2,11 +2,8 @@ package com.example.mircea.moneymanager.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,7 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.mircea.moneymanager.Adapters.PlannerAndTransactionPagerAdapter;
+import com.example.mircea.moneymanager.Adapters.MainActivityPagerAdapter;
 import com.example.mircea.moneymanager.R;
 
 public class MainActivity extends AppCompatActivity
@@ -27,7 +24,7 @@ public class MainActivity extends AppCompatActivity
     private TabLayout tabLayout;
 
     //Adapters
-    private PlannerAndTransactionPagerAdapter plannerAndTransactionPagerAdapter;
+    private MainActivityPagerAdapter mainActivityPagerAdapter;
 
 
     @Override
@@ -38,7 +35,7 @@ public class MainActivity extends AppCompatActivity
         drawerInit();
         uiAndAdaptersInit();
 
-        viewPager.setAdapter(plannerAndTransactionPagerAdapter);
+        viewPager.setAdapter(mainActivityPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
     }
@@ -47,7 +44,7 @@ public class MainActivity extends AppCompatActivity
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.pagerTabs);
 
-        plannerAndTransactionPagerAdapter = new PlannerAndTransactionPagerAdapter(this, getSupportFragmentManager());
+        mainActivityPagerAdapter = new MainActivityPagerAdapter(this, getSupportFragmentManager());
     }
 
     /**Drawer UI**/

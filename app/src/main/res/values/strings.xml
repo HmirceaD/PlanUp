@@ -12,6 +12,7 @@
 
     <string name="planner_fragment_title">Planner</string>
     <string name="transaction_fragment_title">Transactions</string>
+    <string name="savings_fragment_title">Savings</string>
 
     <string name="create_budget_plan">Create Budget Plan</string>
     <string name="budget">Budget:</string>

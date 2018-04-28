@@ -7,16 +7,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.mircea.moneymanager.Fragments.PlannerFragment;
+import com.example.mircea.moneymanager.Fragments.SavingsFragment;
 import com.example.mircea.moneymanager.Fragments.TransactionsFragment;
 import com.example.mircea.moneymanager.R;
 
-public class PlannerAndTransactionPagerAdapter extends FragmentPagerAdapter{
+public class MainActivityPagerAdapter extends FragmentPagerAdapter{
 
     private Context mContext;
 
     //Add bundle later if i need to
 
-    public PlannerAndTransactionPagerAdapter(Context mContext, FragmentManager fragmentManager){
+    public MainActivityPagerAdapter(Context mContext, FragmentManager fragmentManager){
         super(fragmentManager);
         this.mContext = mContext;
     }
@@ -28,10 +29,14 @@ public class PlannerAndTransactionPagerAdapter extends FragmentPagerAdapter{
 
             PlannerFragment plannerFragment = new PlannerFragment();
             return plannerFragment;
-        }else{
+        }else if (position == 1){
 
             TransactionsFragment transactionsFragment = new TransactionsFragment();
             return transactionsFragment;
+        }else{
+
+            SavingsFragment savingsFragment = new SavingsFragment();
+            return savingsFragment;
         }
     }
 
@@ -43,10 +48,10 @@ public class PlannerAndTransactionPagerAdapter extends FragmentPagerAdapter{
         }else if(position == 1){
             return mContext.getString(R.string.transaction_fragment_title);
         }else{
-            return null;
+            return mContext.getString(R.string.savings_fragment_title);
         }
     }
 
     @Override
-    public int getCount() { return 2;}
+    public int getCount() { return 3;}
 }
