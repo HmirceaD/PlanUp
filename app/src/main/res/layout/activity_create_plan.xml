@@ -112,12 +112,22 @@
         android:layout_marginTop="8dp"
         android:clickable="true"
         android:ems="10"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/startPlanTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/startPlanTextView"
         app:layout_constraintTop_toTopOf="@+id/startPlanTextView"
         app:layout_constraintVertical_bias="0.6" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#000"
+        app:layout_constraintLeft_toLeftOf="@+id/startPlanDate"
+        app:layout_constraintRight_toRightOf="@+id/startPlanDate"
+        app:layout_constraintTop_toBottomOf="@+id/startPlanDate"
+        />
 
     <TextView
         android:id="@+id/endPlanTextView"
@@ -147,6 +157,14 @@
         app:layout_constraintStart_toEndOf="@+id/endPlanTextView"
         app:layout_constraintTop_toTopOf="@+id/endPlanTextView"
         app:layout_constraintVertical_bias="0.6" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#000"
+        app:layout_constraintLeft_toLeftOf="@+id/endPlanDate"
+        app:layout_constraintRight_toRightOf="@+id/endPlanDate"
+        app:layout_constraintTop_toBottomOf="@+id/endPlanDate" />
 
 
 
