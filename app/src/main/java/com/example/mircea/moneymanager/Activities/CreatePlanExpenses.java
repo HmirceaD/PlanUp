@@ -1,6 +1,7 @@
 package com.example.mircea.moneymanager.Activities;
 
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mircea.moneymanager.Adapters.ExpenseListAdapter;
@@ -32,6 +34,7 @@ public class CreatePlanExpenses extends AppCompatActivity {
     private Button goToSavingsButton;
     private ListView expensesList;
     private FloatingActionButton addExpenseButton;
+    private TextView remainingBudgetTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +49,16 @@ public class CreatePlanExpenses extends AppCompatActivity {
         goToSavingsButton = findViewById(R.id.goToSavingsButton);
         goToSavingsButton.setOnClickListener((View v) -> goToSavings());
 
+        remainingBudgetTextView = findViewById(R.id.remainingBudgetTextView);
+        //TODO change this to not be harcoded
+        remainingBudgetTextView.setText("1337$");
+
         expensesList = findViewById(R.id.expensesList);
         setupList();
 
         addExpenseButton = findViewById(R.id.addExpense);
         addExpenseButton.setOnClickListener((View v) -> addExpense());
     }
-
-
 
     private void setupList() {
 
@@ -64,6 +69,13 @@ public class CreatePlanExpenses extends AppCompatActivity {
         expenseArrayAdapter = new ExpenseListAdapter(expenseArrayList, getApplicationContext());
 
         expensesList.setAdapter(expenseArrayAdapter);
+
+       // expenseArrayAdapter.registerDataSetObserver(new DataSetObserver() {
+            //@Override
+            //public void onChanged() {
+             //   Toast.makeText(getApplicationContext(), "Zile guta", Toast.LENGTH_SHORT).show();
+           // }
+        //});
     }
 
     private void addExpense() {

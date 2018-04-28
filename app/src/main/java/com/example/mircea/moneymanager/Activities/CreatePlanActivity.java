@@ -24,6 +24,7 @@ import com.example.mircea.moneymanager.R;
 import org.angmarch.views.NiceSpinner;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,6 +32,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class CreatePlanActivity extends AppCompatActivity {
+
+    //Logic
+    private Date startDate;
+    private Date endDate;
 
     //Spinner
     private List<String> currencyList;
@@ -41,6 +46,7 @@ public class CreatePlanActivity extends AppCompatActivity {
     private TextView startPlanDate;
     private TextView endPlanDate;
     private ConstraintLayout createPlanLayout;
+    private EditText budgetEditText;
 
     //Other
     private Calendar myCalendar;
@@ -63,8 +69,13 @@ public class CreatePlanActivity extends AppCompatActivity {
 
         myCalendar = Calendar.getInstance();
 
+        budgetEditText = findViewById(R.id.budgetEditText);
+
         goToExpensesButton = findViewById(R.id.goToExpenses);
         goToExpensesButton.setOnClickListener((View v) -> goToExpenses());
+
+        startDate = new Date();
+        endDate = new Date();
 
         initDateText();
 
@@ -73,20 +84,39 @@ public class CreatePlanActivity extends AppCompatActivity {
     }
 
     private void initDateText() {
-        /**Initializes the date textviews with the start and end of the plan dates**/
+        //Initializes the date textviews /
         startPlanDate = findViewById(R.id.startPlanDate);
-        updateTextView(myCalendar.getTime(), startPlanDate);
+        startPlanDate.setText("");
+
         startPlanDate.setOnClickListener((View v) -> showDateDialog(startPlanDate));
 
         endPlanDate = findViewById(R.id.endPlanDate);
-        updateTextView(myCalendar.getTime(), endPlanDate);
+        endPlanDate.setText("");
+
         endPlanDate.setOnClickListener((View v) -> showDateDialog(endPlanDate));
     }
 
     private void showDateDialog(TextView textView) {
+        //display the calendar dialog to select the dates
+
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getApplicationContext(), new DatePickerListener(textView),
                 myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+
+        if(textView.getId() == R.id.endPlanDate){
+
+            if(startDate != null){
+
+                Date auxStartDate = startDate;
+                Calendar auxCalendar = Calendar.getInstance();
+                auxCalendar.setTime(auxStartDate);
+                auxCalendar.add(Calendar.DATE, 1);
+                auxStartDate = auxCalendar.getTime();
+
+                datePickerDialog.getDatePicker().setMinDate(auxStartDate.getTime());
+
+            }
+        }
 
         datePickerDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
         datePickerDialog.show();
@@ -94,18 +124,28 @@ public class CreatePlanActivity extends AppCompatActivity {
     }
 
     private void setupSpinner() {
-
+        //setup currency spinner
         currencyList = Arrays.asList(getResources().getStringArray(R.array.currency_array));
         currencySpinner.attachDataSource(currencyList);
 
     }
 
     public void goToExpenses(){
+        /**Go to expenses activity**/
 
-        startActivity(new Intent(getApplicationContext(), CreatePlanExpenses.class));
+        if(startPlanDate.getText().toString().equals("") ||
+                endPlanDate.getText().toString().equals("") ||
+                budgetEditText.getText().toString().equals("")){
+
+            Toast.makeText(getApplicationContext(), "Please select the dates and budget", Toast.LENGTH_SHORT).show();
+        }else{
+            startActivity(new Intent(getApplicationContext(), CreatePlanExpenses.class));
+
+        }
     }
 
     private void updateTextView(Date date, TextView dateTextView) {
+        //convert the calendar so it can be displayed in the date textviews
         String myFormat = "E/dd/MM/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
 
@@ -126,6 +166,26 @@ public class CreatePlanActivity extends AppCompatActivity {
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, month);
             myCalendar.set(Calendar.DAY_OF_MONTH, day);
+
+            if(dateTextView.getId() == R.id.startPlanDate){
+
+                startDate = myCalendar.getTime();
+
+                if(startDate.getTime() > endDate.getTime() && endPlanDate.isEnabled()){
+                    /**If the selected startdate is greater then the end date reset the end date**/
+
+                    myCalendar.add(Calendar.DATE, 1);
+                    endDate = myCalendar.getTime();
+                    updateTextView(myCalendar.getTime(), endPlanDate);
+                }
+
+                endPlanDate.setEnabled(true);
+
+            }else{
+
+                endDate = myCalendar.getTime();
+            }
+
             updateTextView(myCalendar.getTime(), dateTextView);
         }
 

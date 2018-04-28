@@ -108,26 +108,55 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
         viewHolder.expenseIcon.setImageDrawable(expense.getExpenseIcon());
 
         viewHolder.expenseName.setText(expense.getExpenseName());
+        viewHolder.expenseName.setOnFocusChangeListener((View v, boolean b) -> saveEditTextData(viewHolder, position, b));
 
         viewHolder.expenseBudget.setText(Float.toString(expense.getExpenseBudget()));
+        viewHolder.expenseBudget.setOnFocusChangeListener((View v, boolean b) -> saveEditTextData(viewHolder, position, b));
 
         viewHolder.expenseColor.setBackgroundColor(expense.getExpenseColor());
 
         viewHolder.expenseDelete.setImageResource(R.drawable.x_icon);
         viewHolder.expenseDelete.setOnClickListener((View v) -> deletePost(position, viewHolder));
+        viewHolder.expenseDelete.setOnFocusChangeListener(new ClickOnFocus());
 
         viewHolder.expenseIcon.setOnClickListener((View v) -> changeIcon(viewHolder, position));
-        viewHolder.expenseColor.setOnClickListener((View v) -> changeColor(viewHolder, position));
+        viewHolder.expenseIcon.setOnFocusChangeListener(new ClickOnFocus());
 
-        viewHolder.expenseLayout.setOnClickListener((View v) ->  hideKeyboardAndSave(position, viewHolder.expenseName, viewHolder.expenseBudget));
+        viewHolder.expenseColor.setOnClickListener((View v) -> changeColor(viewHolder, position));
+        viewHolder.expenseColor.setOnFocusChangeListener(new ClickOnFocus());
+
+        viewHolder.expenseLayout.setOnClickListener((View v) ->  hideKeyboardAndSave(position, viewHolder));
 
         return convertView;
+    }
+
+    private void saveEditTextData(ViewHolder viewHolder, int position, boolean hasFocus) {
+
+        if(!hasFocus){
+
+            saveData(viewHolder, position);
+        }
+    }
+
+    private void saveData(ViewHolder viewHolder, int position) {
+
+        expenseArrayList.get(position).setExpenseName(viewHolder.expenseName.getText().toString());
+
+        float budgetValue;
+
+        if(viewHolder.expenseBudget.getText().toString().equals("")){
+            budgetValue = 0f;
+        }else{
+
+            budgetValue = Float.parseFloat(viewHolder.expenseBudget.getText().toString());
+        }
+        expenseArrayList.get(position).setExpenseBudget(budgetValue);
     }
 
     /**Create the color popup**/
     private void changeColor(ViewHolder viewHolder, int position) {
 
-        hideKeyboardAndSave(position, viewHolder.expenseName, viewHolder.expenseBudget);
+        hideKeyboardAndSave(position, viewHolder);
 
         final Dialog dialog = new Dialog(mContext);
         dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
@@ -159,7 +188,7 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
     /**Create the icon popup**/
     private void changeIcon(ViewHolder viewHolder, int position) {
 
-        hideKeyboardAndSave(position, viewHolder.expenseName, viewHolder.expenseBudget);
+        hideKeyboardAndSave(position, viewHolder);
 
         final Dialog dialog = new Dialog(mContext);
         dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
@@ -193,29 +222,19 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
     //TODO refactor this ugly shit
 
 
-    public void hideKeyboardAndSave(int pos, EditText nameEditText, EditText budgetEditText){
+    public void hideKeyboardAndSave(int pos, ViewHolder viewHolder){
 
-        expenseArrayList.get(pos).setExpenseName(nameEditText.getText().toString());
 
-        float budgetValue;
-
-        if(budgetEditText.getText().toString().equals("")){
-            budgetValue = 0f;
-        }else{
-
-            budgetValue = Float.parseFloat(budgetEditText.getText().toString());
-        }
-
-        expenseArrayList.get(pos).setExpenseBudget(budgetValue);
 
         InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(viewHolder.expenseName.getWindowToken(), 0);
+
     }
 
     public void deletePost(int position, ViewHolder viewHolder){
         /*Delete the post int the list*/
 
-        hideKeyboardAndSave(position, viewHolder.expenseName, viewHolder.expenseBudget);
+        hideKeyboardAndSave(position, viewHolder);
 
         expenseArrayList.remove(position);
         notifyDataSetChanged();
@@ -255,5 +274,16 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
         ImageButton expenseColor;
         ImageButton expenseDelete;
 
+    }
+
+    private class ClickOnFocus implements View.OnFocusChangeListener {
+        @Override
+        public void onFocusChange(View view, boolean b) {
+
+            if(b){
+                view.performClick();
+
+            }
+        }
     }
 }

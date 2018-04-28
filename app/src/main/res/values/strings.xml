@@ -39,6 +39,9 @@
 
     <string name="create_wish">Create a wish</string>
 
+    <string name="remaining">Remaining:</string>
+    <string name="placeholder_number">4200</string>
+
     <string name="ex_wish_name">E.g. Trip to Chernobyl</string>
     <string name="ex_wish_desc">Radiation is nice this time of year</string>
 
