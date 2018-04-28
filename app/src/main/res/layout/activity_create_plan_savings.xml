@@ -2,10 +2,17 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_savings_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF"
     tools:context="com.example.mircea.moneymanager.Activities.CreatePlanSavings">
+
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
     <Button
         android:id="@+id/goToMainActivityButton"
@@ -81,4 +88,21 @@
         app:layout_constraintEnd_toEndOf="@+id/savingsAddWishButton"
         app:layout_constraintStart_toStartOf="@+id/savingsAddWishButton"
         app:layout_constraintTop_toBottomOf="@+id/savingsAddWishButton" />
+
+    <ExpandableListView
+        android:id="@+id/wishExpandableListView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/goToMainActivityButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentWishTextView"
+        app:layout_constraintVertical_bias="1.0" />
+
+
+
 </android.support.constraint.ConstraintLayout>

@@ -2,10 +2,17 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_plan_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF"
     tools:context="com.example.mircea.moneymanager.Activities.CreatePlanActivity">
+
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
     <TextView
         android:id="@+id/createBudgetTextView"
@@ -88,8 +95,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/colorAccent"
-        android:textColor="#FFF"
         android:text="@string/go_to_expenses"
+        android:textColor="#FFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -140,5 +147,7 @@
         app:layout_constraintStart_toEndOf="@+id/endPlanTextView"
         app:layout_constraintTop_toTopOf="@+id/endPlanTextView"
         app:layout_constraintVertical_bias="0.6" />
+
+
 
 </android.support.constraint.ConstraintLayout>

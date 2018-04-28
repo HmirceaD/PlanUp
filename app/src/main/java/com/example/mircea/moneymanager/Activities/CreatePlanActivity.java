@@ -1,11 +1,15 @@
 package com.example.mircea.moneymanager.Activities;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -14,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mircea.moneymanager.Listeners.HideKeyboardListener;
 import com.example.mircea.moneymanager.R;
 
 import org.angmarch.views.NiceSpinner;
@@ -35,10 +40,10 @@ public class CreatePlanActivity extends AppCompatActivity {
     private NiceSpinner currencySpinner;
     private TextView startPlanDate;
     private TextView endPlanDate;
+    private ConstraintLayout createPlanLayout;
 
     //Other
     private Calendar myCalendar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,11 @@ public class CreatePlanActivity extends AppCompatActivity {
     }
 
     private void setupUi() {
+
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        createPlanLayout = findViewById(R.id.create_plan_layout);
+        new HideKeyboardListener(createPlanLayout, getApplicationContext());
 
         myCalendar = Calendar.getInstance();
 
@@ -96,8 +106,7 @@ public class CreatePlanActivity extends AppCompatActivity {
     }
 
     private void updateTextView(Date date, TextView dateTextView) {
-        //TODO make this a lil nicer
-        String myFormat = "E/dd/MM/yy"; //In which you need put here
+        String myFormat = "E/dd/MM/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
 
         dateTextView.setText(sdf.format(date));
@@ -122,4 +131,6 @@ public class CreatePlanActivity extends AppCompatActivity {
 
 
     }
+
+
 }

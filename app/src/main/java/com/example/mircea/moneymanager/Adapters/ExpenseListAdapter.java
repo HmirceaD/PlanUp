@@ -5,10 +5,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mircea.moneymanager.Activities.CreatePlanExpenses;
+import com.example.mircea.moneymanager.Listeners.HideKeyboardListener;
 import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.Expense;
 
@@ -77,13 +80,17 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
             convertView = lI.inflate(R.layout.expense_list_item, null);
             viewHolder = new ViewHolder();
 
+            viewHolder.expenseLayout = convertView.findViewById(R.id.expenseItemLayout);
+
             viewHolder.expenseIcon = convertView.findViewById(R.id.expenseIcon);
+
             viewHolder.expenseName = convertView.findViewById(R.id.expenseName);
+
             viewHolder.expenseBudget = convertView.findViewById(R.id.expenseBudget);
+
             viewHolder.expenseColor = convertView.findViewById(R.id.expenseColor);
             viewHolder.expenseDelete = convertView.findViewById(R.id.expenseDelete);
-            viewHolder.expenseDelete.setOnClickListener((View v) -> deletePost(position, viewHolder.expenseDelete));
-
+            viewHolder.expenseDelete.setOnClickListener((View v) -> deletePost(position, viewHolder));
 
             convertView.setTag(viewHolder);
 
@@ -93,29 +100,35 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
             viewHolder.expenseIcon.setOnClickListener(null);
             viewHolder.expenseColor.setOnClickListener(null);
             viewHolder.expenseDelete.setOnClickListener(null);
+
         }
 
         Expense expense = expenseArrayList.get(position);
 
         viewHolder.expenseIcon.setImageDrawable(expense.getExpenseIcon());
-        viewHolder.expenseIcon.setOnClickListener((View v) -> changeIcon(viewHolder, position));
 
         viewHolder.expenseName.setText(expense.getExpenseName());
-        viewHolder.expenseName.setOnFocusChangeListener(new NameFocusChange(position, viewHolder.expenseName));
 
-        viewHolder.expenseBudget.setText("");
+        viewHolder.expenseBudget.setText(Float.toString(expense.getExpenseBudget()));
 
         viewHolder.expenseColor.setBackgroundColor(expense.getExpenseColor());
-        viewHolder.expenseColor.setOnClickListener((View v) -> changeColor(viewHolder, position));
 
         viewHolder.expenseDelete.setImageResource(R.drawable.x_icon);
-        viewHolder.expenseDelete.setOnClickListener((View v) -> deletePost(position, viewHolder.expenseDelete));
+        viewHolder.expenseDelete.setOnClickListener((View v) -> deletePost(position, viewHolder));
+
+        viewHolder.expenseIcon.setOnClickListener((View v) -> changeIcon(viewHolder, position));
+        viewHolder.expenseColor.setOnClickListener((View v) -> changeColor(viewHolder, position));
+
+        viewHolder.expenseLayout.setOnClickListener((View v) ->  hideKeyboardAndSave(position, viewHolder.expenseName, viewHolder.expenseBudget));
 
         return convertView;
     }
 
     /**Create the color popup**/
     private void changeColor(ViewHolder viewHolder, int position) {
+
+        hideKeyboardAndSave(position, viewHolder.expenseName, viewHolder.expenseBudget);
+
         final Dialog dialog = new Dialog(mContext);
         dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -146,6 +159,8 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
     /**Create the icon popup**/
     private void changeIcon(ViewHolder viewHolder, int position) {
 
+        hideKeyboardAndSave(position, viewHolder.expenseName, viewHolder.expenseBudget);
+
         final Dialog dialog = new Dialog(mContext);
         dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -175,45 +190,36 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
     }
 
-    private class NameFocusChange implements View.OnFocusChangeListener{
+    //TODO refactor this ugly shit
 
-        private int pos;
-        private EditText name;
 
-        public NameFocusChange(int position, EditText name){
+    public void hideKeyboardAndSave(int pos, EditText nameEditText, EditText budgetEditText){
 
-            this.pos = position;
-            this.name = name;
+        expenseArrayList.get(pos).setExpenseName(nameEditText.getText().toString());
+
+        float budgetValue;
+
+        if(budgetEditText.getText().toString().equals("")){
+            budgetValue = 0f;
+        }else{
+
+            budgetValue = Float.parseFloat(budgetEditText.getText().toString());
         }
 
-        @Override
-        public void onFocusChange(View view, boolean b) {
+        expenseArrayList.get(pos).setExpenseBudget(budgetValue);
 
-            if(!b){
-                /**Changes the name of the expense**/
-                expenseArrayList.get(pos).setExpenseName(name.getText().toString());
-            }
-        }
+        InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
     }
 
-    public void deletePost(int position, View v){
+    public void deletePost(int position, ViewHolder viewHolder){
         /*Delete the post int the list*/
 
-        if(v.hasFocus()){
-            //TODO do this for all actions in activity
-            v.requestFocus();
-            v.clearFocus();
+        hideKeyboardAndSave(position, viewHolder.expenseName, viewHolder.expenseBudget);
 
-            expenseArrayList.remove(position);
-            notifyDataSetChanged();
-            notifyDataSetInvalidated();
-
-            /**Kills keyboard**/
-
-                InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-        }
+        expenseArrayList.remove(position);
+        notifyDataSetChanged();
+        notifyDataSetInvalidated();
 
     }
 
@@ -241,6 +247,8 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
     public static class ViewHolder{
 
+        //Layout
+        ConstraintLayout expenseLayout;
         ImageButton expenseIcon;
         EditText expenseName;
         EditText expenseBudget;
