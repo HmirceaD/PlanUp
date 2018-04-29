@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -36,6 +37,10 @@ public class CreatePlanExpenses extends AppCompatActivity {
     private FloatingActionButton addExpenseButton;
     private TextView remainingBudgetTextView;
 
+    //Logic
+    //TODO this should be initialized at run time from the db/shp
+    private float budget = 1337;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +56,7 @@ public class CreatePlanExpenses extends AppCompatActivity {
 
         remainingBudgetTextView = findViewById(R.id.remainingBudgetTextView);
         //TODO change this to not be harcoded
-        remainingBudgetTextView.setText("1337$");
+        remainingBudgetTextView.setText(Float.toString(budget));
 
         expensesList = findViewById(R.id.expensesList);
         setupList();
@@ -70,12 +75,7 @@ public class CreatePlanExpenses extends AppCompatActivity {
 
         expensesList.setAdapter(expenseArrayAdapter);
 
-       // expenseArrayAdapter.registerDataSetObserver(new DataSetObserver() {
-            //@Override
-            //public void onChanged() {
-             //   Toast.makeText(getApplicationContext(), "Zile guta", Toast.LENGTH_SHORT).show();
-           // }
-        //});
+        expenseArrayAdapter.registerDataSetObserver(new BudgetDivisor());
     }
 
     private void addExpense() {
@@ -97,5 +97,12 @@ public class CreatePlanExpenses extends AppCompatActivity {
     private void goToSavings() {
 
         startActivity(new Intent(getApplicationContext(), CreatePlanSavings.class));
+    }
+
+    private class BudgetDivisor extends DataSetObserver{
+        @Override
+        public void onChanged() {
+
+        }
     }
 }

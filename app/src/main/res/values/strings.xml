@@ -42,6 +42,14 @@
     <string name="remaining">Remaining:</string>
     <string name="placeholder_number">4200</string>
 
+    <string name="achievements">Achievements</string>
+
+    <string name="monthly">Monthly</string>
+    <string name="weekly">Weekly</string>
+    <string name="other_date">Other Date</string>
+
+    <string name="when_to_update">When should the plan update?</string>
+
     <string name="ex_wish_name">E.g. Trip to Chernobyl</string>
     <string name="ex_wish_desc">Radiation is nice this time of year</string>
 
@@ -56,10 +64,6 @@
         <item>RUB</item>
         <item>PLN</item>
     </string-array>
-
-
-
-
 
 
 </resources>

@@ -151,7 +151,10 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
             budgetValue = Float.parseFloat(viewHolder.expenseBudget.getText().toString());
         }
         expenseArrayList.get(position).setExpenseBudget(budgetValue);
+        notifyDataSetChanged();
     }
+    //TODO subtract the budget of an expense from actual budgte
+    //TODO align the layout
 
     /**Create the color popup**/
     private void changeColor(ViewHolder viewHolder, int position) {
@@ -221,10 +224,7 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
     //TODO refactor this ugly shit
 
-
     public void hideKeyboardAndSave(int pos, ViewHolder viewHolder){
-
-
 
         InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(viewHolder.expenseName.getWindowToken(), 0);
@@ -282,7 +282,6 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
             if(b){
                 view.performClick();
-
             }
         }
     }

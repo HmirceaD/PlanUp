@@ -14,6 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,8 +36,7 @@ import java.util.Locale;
 public class CreatePlanActivity extends AppCompatActivity {
 
     //Logic
-    private Date startDate;
-    private Date endDate;
+    private Date startDate, endDate;
 
     //Spinner
     private List<String> currencyList;
@@ -43,10 +44,11 @@ public class CreatePlanActivity extends AppCompatActivity {
     //Ui
     private Button goToExpensesButton;
     private NiceSpinner currencySpinner;
-    private TextView startPlanDate;
-    private TextView endPlanDate;
+    private TextView startPlanDate, endPlanDate;
     private ConstraintLayout createPlanLayout;
     private EditText budgetEditText;
+    private RadioGroup updateBudgetRadioGroup;
+    private RadioButton monthlyRadioButton, weeklyRadioButton, otherDateRadioButton;
 
     //Other
     private Calendar myCalendar;
@@ -60,30 +62,52 @@ public class CreatePlanActivity extends AppCompatActivity {
 
     }
 
+    //TODO ADD COMMENTS
     private void setupUi() {
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        createPlanLayout = findViewById(R.id.create_plan_layout);
-        new HideKeyboardListener(createPlanLayout, getApplicationContext());
+        setupLayout();
 
         myCalendar = Calendar.getInstance();
 
         budgetEditText = findViewById(R.id.budgetEditText);
 
+        setupRadioButtons();
+
+        setupExpenseButton();
+
+        setupDateText();
+
+        setupSpinner();
+    }
+
+    private void setupExpenseButton() {
         goToExpensesButton = findViewById(R.id.goToExpenses);
         goToExpensesButton.setOnClickListener((View v) -> goToExpenses());
+    }
+
+    private void setupRadioButtons() {
+        updateBudgetRadioGroup = findViewById(R.id.updateBudgetRadioGroup);
+        updateBudgetRadioGroup.setOnCheckedChangeListener(new UpdateCheckChange());
+
+        monthlyRadioButton = findViewById(R.id.monthlyRadioButton);
+        weeklyRadioButton = findViewById(R.id.weeklyRadioButton);
+        otherDateRadioButton = findViewById(R.id.otherDateRadioButton);
+
+    }
+
+    private void setupLayout() {
+
+        createPlanLayout = findViewById(R.id.create_plan_layout);
+        new HideKeyboardListener(createPlanLayout, getApplicationContext());
+    }
+
+    private void setupDateText() {
 
         startDate = new Date();
         endDate = new Date();
 
-        initDateText();
-
-        currencySpinner = findViewById(R.id.currencySpinner);
-        setupSpinner();
-    }
-
-    private void initDateText() {
         //Initializes the date textviews /
         startPlanDate = findViewById(R.id.startPlanDate);
         startPlanDate.setText("");
@@ -125,6 +149,7 @@ public class CreatePlanActivity extends AppCompatActivity {
 
     private void setupSpinner() {
         //setup currency spinner
+        currencySpinner = findViewById(R.id.currencySpinner);
         currencyList = Arrays.asList(getResources().getStringArray(R.array.currency_array));
         currencySpinner.attachDataSource(currencyList);
 
@@ -171,25 +196,71 @@ public class CreatePlanActivity extends AppCompatActivity {
 
                 startDate = myCalendar.getTime();
 
-                if(startDate.getTime() > endDate.getTime() && endPlanDate.isEnabled()){
-                    /**If the selected startdate is greater then the end date reset the end date**/
+                if(updateBudgetRadioGroup.getCheckedRadioButtonId() != -1){
+                    /**If this is the first time that the edittext is select then do nothing**/
+                    changeEndDateByRadioAmount(updateBudgetRadioGroup.getCheckedRadioButtonId());
 
-                    myCalendar.add(Calendar.DATE, 1);
-                    endDate = myCalendar.getTime();
-                    updateTextView(myCalendar.getTime(), endPlanDate);
                 }
 
-                endPlanDate.setEnabled(true);
+                /**Activate the radio buttons to select the end date**/
+                monthlyRadioButton.setEnabled(true);
+                weeklyRadioButton.setEnabled(true);
+                otherDateRadioButton.setEnabled(true);
 
             }else{
 
+                otherDateRadioButton.setChecked(true);
                 endDate = myCalendar.getTime();
             }
 
             updateTextView(myCalendar.getTime(), dateTextView);
         }
+    }
 
+    private class UpdateCheckChange implements RadioGroup.OnCheckedChangeListener{
+        @Override
+        public void onCheckedChanged(RadioGroup radioGroup, int id) {
 
+            changeEndDateByRadioAmount(id);
+        }
+    }
+
+    private void changeEndDateByRadioAmount(int id) {
+
+        Calendar auxCalendar = Calendar.getInstance();
+        auxCalendar.setTime(startDate);
+
+        switch (id){
+
+            case R.id.monthlyRadioButton:
+
+                auxCalendar.add(Calendar.MONTH, 1);
+                endDate = auxCalendar.getTime();
+                updateTextView(auxCalendar.getTime(), endPlanDate);
+
+                endPlanDate.setEnabled(true);
+
+                break;
+            case R.id.weeklyRadioButton:
+
+                auxCalendar.add(Calendar.WEEK_OF_MONTH, 1);
+                endDate = auxCalendar.getTime();
+                updateTextView(auxCalendar.getTime(), endPlanDate);
+
+                endPlanDate.setEnabled(true);
+
+                break;
+
+            case R.id.otherDateRadioButton:
+
+                auxCalendar.add(Calendar.DAY_OF_MONTH, 1);
+                endDate = auxCalendar.getTime();
+                updateTextView(auxCalendar.getTime(), endPlanDate);
+
+                endPlanDate.setEnabled(true);
+
+                break;
+        }
     }
 
 

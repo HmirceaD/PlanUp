@@ -23,7 +23,9 @@
         </activity>
         <activity android:name=".Activities.CreatePlanActivity" />
         <activity android:name=".Activities.CreatePlanExpenses" />
-        <activity android:name=".Activities.CreatePlanSavings"></activity>
+        <activity android:name=".Activities.CreatePlanSavings" />
+        <activity android:name=".Activities.SettingsActivity" />
+        <activity android:name=".Activities.AchievementsActivity"></activity>
     </application>
 
 </manifest>

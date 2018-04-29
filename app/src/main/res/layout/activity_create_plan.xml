@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="64dp"
         android:text="@string/budget"
         android:textAppearance="@style/TextAppearance.AppCompat.Menu"
         android:textSize="22sp"
@@ -93,14 +93,14 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@color/colorAccent"
         android:text="@string/go_to_expenses"
         android:textColor="#FFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startPlanTextView"
+        app:layout_constraintTop_toBottomOf="@+id/endPlanTextView"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
@@ -125,20 +125,19 @@
         android:background="#000"
         app:layout_constraintLeft_toLeftOf="@+id/startPlanDate"
         app:layout_constraintRight_toRightOf="@+id/startPlanDate"
-        app:layout_constraintTop_toBottomOf="@+id/startPlanDate"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/startPlanDate" />
 
     <TextView
         android:id="@+id/endPlanTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="24dp"
         android:text="@string/end_plan"
         android:textAppearance="@style/TextAppearance.AppCompat.Menu"
         android:textSize="22sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startPlanTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/updateBudgetRadioGroup" />
 
     <TextView
         android:id="@+id/endPlanDate"
@@ -147,14 +146,15 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:enabled="false"
         android:ems="10"
+        android:enabled="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintBottom_toBottomOf="@+id/endPlanTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toEndOf="@+id/endPlanTextView"
         app:layout_constraintTop_toTopOf="@+id/endPlanTextView"
+
         app:layout_constraintVertical_bias="0.6" />
 
     <View
@@ -165,6 +165,54 @@
         app:layout_constraintRight_toRightOf="@+id/endPlanDate"
         app:layout_constraintTop_toBottomOf="@+id/endPlanDate" />
 
+    <TextView
+        android:id="@+id/updateExplainTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/when_to_update"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startPlanTextView" />
+
+    <RadioGroup
+        android:id="@+id/updateBudgetRadioGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/updateExplainTextView">
+
+        <RadioButton
+            android:id="@+id/monthlyRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:layout_weight="1"
+            android:text="@string/monthly" />
+
+        <RadioButton
+            android:id="@+id/weeklyRadioButton"
+            android:enabled="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/weekly" />
+
+        <RadioButton
+            android:id="@+id/otherDateRadioButton"
+            android:enabled="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/other_date" />
+    </RadioGroup>
 
 
 </android.support.constraint.ConstraintLayout>
