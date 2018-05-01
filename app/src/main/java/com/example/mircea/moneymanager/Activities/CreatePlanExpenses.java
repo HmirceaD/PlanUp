@@ -3,6 +3,7 @@ package com.example.mircea.moneymanager.Activities;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +20,7 @@ import com.example.mircea.moneymanager.Raw.Expense;
 import java.util.ArrayList;
 
 
-public class CreatePlanExpenses extends AppCompatActivity {
+public class CreatePlanExpenses extends AppCompatActivity{
 
     //List Stuff
     private ExpenseListAdapter expenseArrayAdapter;
@@ -41,6 +42,11 @@ public class CreatePlanExpenses extends AppCompatActivity {
         setContentView(R.layout.activity_create_plan_expenses);
 
         setupUi();
+    }
+
+    @Override
+    public void stopLocalVoiceInteraction() {
+        super.stopLocalVoiceInteraction();
     }
 
     private void setupUi() {
@@ -73,12 +79,11 @@ public class CreatePlanExpenses extends AppCompatActivity {
 
         expensesList.setAdapter(expenseArrayAdapter);
 
-        //expenseArrayAdapter.registerDataSetObserver(new BudgetDivisor());
     }
 
     private void addExpense() {
 
-        expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f, Color.BLACK));
+        expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f));
         expenseArrayAdapter.notifyDataSetChanged();
 
         Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show();
@@ -86,17 +91,15 @@ public class CreatePlanExpenses extends AppCompatActivity {
 
     private void populateInitialExpenses() {
 
-        expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f, Color.BLACK));
-        expenseArrayList.add(new Expense(getDrawable(R.drawable.house_icon), "House", 0f, Color.BLUE));
-        expenseArrayList.add(new Expense(getDrawable(R.drawable.food_icon), "Food", 0f, Color.RED));
+        expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f));
+        expenseArrayList.add(new Expense(getDrawable(R.drawable.house_icon), "House", 0f));
+        expenseArrayList.add(new Expense(getDrawable(R.drawable.food_icon), "Food", 0f));
     }
 
     private void goToSavings() {
 
         startActivity(new Intent(getApplicationContext(), CreatePlanSavings.class));
     }
-
-    public void subtractBudget(float sub){budget -= sub;}
 
     public float divideBudget(){
 
@@ -110,11 +113,4 @@ public class CreatePlanExpenses extends AppCompatActivity {
         return auxBudget;
     }
 
-    private class BudgetDivisor extends DataSetObserver{
-        @Override
-        public void onChanged() {
-
-
-        }
-    }
 }

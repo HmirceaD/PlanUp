@@ -65,5 +65,20 @@
         <item>PLN</item>
     </string-array>
 
+    <string-array name="color_names">
+        <item>lightBlue</item>
+        <item>darkBlue</item>
+        <item>mauve</item>
+        <item>orange</item>
+        <item>lavender</item>
+        <item>purple</item>
+        <item>aqua</item>
+        <item>green</item>
+        <item>mustard</item>
+        <item>darkGray</item>
+        <item>pink</item>
+        <item>lightGray</item>
+    </string-array>
+
 
 </resources>

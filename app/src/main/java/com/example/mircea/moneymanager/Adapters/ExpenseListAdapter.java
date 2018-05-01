@@ -1,10 +1,15 @@
 package com.example.mircea.moneymanager.Adapters;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -17,6 +22,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +33,7 @@ import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.Expense;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class ExpenseListAdapter extends ArrayAdapter<Expense> {
@@ -90,7 +97,6 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
             viewHolder.expenseBudget = convertView.findViewById(R.id.expenseBudget);
 
-            viewHolder.expenseColor = convertView.findViewById(R.id.expenseColor);
             viewHolder.expenseDelete = convertView.findViewById(R.id.expenseDelete);
             viewHolder.expenseDelete.setOnClickListener((View v) -> deletePost(position, viewHolder));
 
@@ -100,7 +106,6 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
             viewHolder = (ViewHolder)convertView.getTag();
             viewHolder.expenseIcon.setOnClickListener(null);
-            viewHolder.expenseColor.setOnClickListener(null);
             viewHolder.expenseDelete.setOnClickListener(null);
 
         }
@@ -117,17 +122,12 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
         viewHolder.expenseBudget.setOnFocusChangeListener((View v, boolean b) -> saveEditTextData(viewHolder, position, b));
         viewHolder.expenseBudget.setOnEditorActionListener(new DoneButtonPress(position, viewHolder));
 
-        viewHolder.expenseColor.setBackgroundColor(expense.getExpenseColor());
-
         viewHolder.expenseDelete.setImageResource(R.drawable.x_icon);
         viewHolder.expenseDelete.setOnClickListener((View v) -> deletePost(position, viewHolder));
         viewHolder.expenseDelete.setOnFocusChangeListener(new ClickOnFocus());
 
         viewHolder.expenseIcon.setOnClickListener((View v) -> changeIcon(viewHolder, position));
         viewHolder.expenseIcon.setOnFocusChangeListener(new ClickOnFocus());
-
-        viewHolder.expenseColor.setOnClickListener((View v) -> changeColor(viewHolder, position));
-        viewHolder.expenseColor.setOnFocusChangeListener(new ClickOnFocus());
 
         viewHolder.expenseLayout.setOnClickListener((View v) ->  hideKeyboardAndSave(position, viewHolder));
 
@@ -143,7 +143,6 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
     }
 
     private void saveData(ViewHolder viewHolder, int position) {
-
 
         expenseArrayList.get(position).setExpenseName(viewHolder.expenseName.getText().toString());
 
@@ -175,44 +174,6 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
     }
     //TODO subtract the budget of an expense from actual budgte
     //TODO align the layout
-
-    public void displayExList(){
-        for(Expense ex:expenseArrayList){
-            Log.i("COAIE MARI AM", Integer.toString(ex.getExpenseColor()));
-        }
-    }
-
-    /**Create the color popup**/
-    private void changeColor(ViewHolder viewHolder, int position) {
-
-        hideKeyboardAndSave(position, viewHolder);
-
-        final Dialog dialog = new Dialog(mContext);
-        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.colors_alert_dialog);
-
-        for(int id: colorListId){
-
-            dialog.findViewById(id).setOnClickListener((View v) -> setColorResource(viewHolder, id, dialog, position));
-
-        }
-
-        dialog.show();
-    }
-
-    private void setColorResource(ViewHolder viewHolder, int id, Dialog dialog, int position) {
-
-        for(int counter = 0; counter < colorListId.length; counter++){
-            if(id == colorListId[counter]){
-                viewHolder.expenseColor.setImageResource(colorListRes[counter]);
-                expenseArrayList.get(position).setExpenseColor(iconListDrawable[counter]);
-                notifyDataSetChanged();
-            }
-        }
-
-        dialog.dismiss();
-    }
 
     /**Create the icon popup**/
     private void changeIcon(ViewHolder viewHolder, int position) {
@@ -302,7 +263,6 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
         ImageButton expenseIcon;
         EditText expenseName;
         EditText expenseBudget;
-        ImageButton expenseColor;
         ImageButton expenseDelete;
 
     }
