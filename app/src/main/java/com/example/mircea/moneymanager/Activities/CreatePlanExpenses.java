@@ -6,12 +6,9 @@ import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,10 +16,7 @@ import com.example.mircea.moneymanager.Adapters.ExpenseListAdapter;
 import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.Expense;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class CreatePlanExpenses extends AppCompatActivity {
@@ -56,7 +50,7 @@ public class CreatePlanExpenses extends AppCompatActivity {
 
         remainingBudgetTextView = findViewById(R.id.remainingBudgetTextView);
         //TODO change this to not be harcoded
-        remainingBudgetTextView.setText(Float.toString(budget));
+        changeBudgetTextView(budget);
 
         expensesList = findViewById(R.id.expensesList);
         setupList();
@@ -65,24 +59,27 @@ public class CreatePlanExpenses extends AppCompatActivity {
         addExpenseButton.setOnClickListener((View v) -> addExpense());
     }
 
+    public void changeBudgetTextView(float dividedBudget) {
+        remainingBudgetTextView.setText(Float.toString(dividedBudget));
+    }
+
     private void setupList() {
 
         expenseArrayList = new ArrayList<>();
 
         populateInitialExpenses();
 
-        expenseArrayAdapter = new ExpenseListAdapter(expenseArrayList, getApplicationContext());
+        expenseArrayAdapter = new ExpenseListAdapter(expenseArrayList, CreatePlanExpenses.this, budget);
 
         expensesList.setAdapter(expenseArrayAdapter);
 
-        expenseArrayAdapter.registerDataSetObserver(new BudgetDivisor());
+        //expenseArrayAdapter.registerDataSetObserver(new BudgetDivisor());
     }
 
     private void addExpense() {
 
         expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f, Color.BLACK));
-        //expenseArrayAdapter.notifyDataSetChanged();
-        expensesList.setAdapter(expenseArrayAdapter);
+        expenseArrayAdapter.notifyDataSetChanged();
 
         Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show();
     }
@@ -99,9 +96,24 @@ public class CreatePlanExpenses extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), CreatePlanSavings.class));
     }
 
+    public void subtractBudget(float sub){budget -= sub;}
+
+    public float divideBudget(){
+
+        float auxBudget = budget;
+
+        for(Expense expense:expenseArrayList){
+            auxBudget -= expense.getExpenseBudget();
+
+        }
+
+        return auxBudget;
+    }
+
     private class BudgetDivisor extends DataSetObserver{
         @Override
         public void onChanged() {
+
 
         }
     }

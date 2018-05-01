@@ -1,35 +1,32 @@
 package com.example.mircea.moneymanager.Adapters;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mircea.moneymanager.Activities.CreatePlanExpenses;
-import com.example.mircea.moneymanager.Listeners.HideKeyboardListener;
 import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.Expense;
 
 import java.util.ArrayList;
-import java.util.jar.Attributes;
 
 
 public class ExpenseListAdapter extends ArrayAdapter<Expense> {
@@ -45,12 +42,16 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
     private LayoutInflater lI;
 
-    public ExpenseListAdapter(ArrayList<Expense> fA, Context c){
+    private float budget;
+
+    public ExpenseListAdapter(ArrayList<Expense> fA, Context c, float budget){
         super(c, R.layout.expense_list_item, fA);
 
         this.expenseArrayList = fA;
         this.mContext = c;
         this.lI = LayoutInflater.from(mContext);
+        this.budget = budget;
+
         iconsListId = new int[]{R.id.car_icon,R.id.cart_icon,R.id.dress_icon,R.id.food_icon,R.id.game_icon,R.id.gift_icon,R.id.house_icon,R.id.internet_icon,
                 R.id.phone_icon,R.id.repair_icon,R.id.shirt_icon,R.id.shoes_icon,R.id.travel_icon,R.id.utilities_icon,R.id.wifi_icon};
 
@@ -64,7 +65,6 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
         colorListRes = new int[]{R.color.darkBlue,R.color.lightBlue,R.color.mauve,R.color.red,
                 R.color.orange,R.color.lavender,R.color.purple,R.color.aqua,
                 R.color.green,R.color.mustard,R.color.darkGray,R.color.pink,R.color.lightGray};
-
 
     }
 
@@ -81,6 +81,8 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
             viewHolder = new ViewHolder();
 
             viewHolder.expenseLayout = convertView.findViewById(R.id.expenseItemLayout);
+
+            viewHolder.expenseDummyLayout = convertView.findViewById(R.id.expenseDummyLayout);
 
             viewHolder.expenseIcon = convertView.findViewById(R.id.expenseIcon);
 
@@ -109,9 +111,11 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
         viewHolder.expenseName.setText(expense.getExpenseName());
         viewHolder.expenseName.setOnFocusChangeListener((View v, boolean b) -> saveEditTextData(viewHolder, position, b));
+        viewHolder.expenseName.setOnEditorActionListener(new DoneButtonPress(position, viewHolder));
 
         viewHolder.expenseBudget.setText(Float.toString(expense.getExpenseBudget()));
         viewHolder.expenseBudget.setOnFocusChangeListener((View v, boolean b) -> saveEditTextData(viewHolder, position, b));
+        viewHolder.expenseBudget.setOnEditorActionListener(new DoneButtonPress(position, viewHolder));
 
         viewHolder.expenseColor.setBackgroundColor(expense.getExpenseColor());
 
@@ -140,6 +144,7 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
     private void saveData(ViewHolder viewHolder, int position) {
 
+
         expenseArrayList.get(position).setExpenseName(viewHolder.expenseName.getText().toString());
 
         float budgetValue;
@@ -150,11 +155,32 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
             budgetValue = Float.parseFloat(viewHolder.expenseBudget.getText().toString());
         }
+
+        if(budget - budgetValue < 0){
+            budgetValue = budget;
+            Toast.makeText(mContext, "You can't spend more than you already have", Toast.LENGTH_SHORT).show();
+
+        }
+
         expenseArrayList.get(position).setExpenseBudget(budgetValue);
+
+        updateBudgetLabel();
+
         notifyDataSetChanged();
+    }
+
+    private void updateBudgetLabel() {
+        budget = ((CreatePlanExpenses)mContext).divideBudget();
+        ((CreatePlanExpenses)mContext).changeBudgetTextView(budget);
     }
     //TODO subtract the budget of an expense from actual budgte
     //TODO align the layout
+
+    public void displayExList(){
+        for(Expense ex:expenseArrayList){
+            Log.i("COAIE MARI AM", Integer.toString(ex.getExpenseColor()));
+        }
+    }
 
     /**Create the color popup**/
     private void changeColor(ViewHolder viewHolder, int position) {
@@ -226,6 +252,8 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
     public void hideKeyboardAndSave(int pos, ViewHolder viewHolder){
 
+        viewHolder.expenseDummyLayout.requestFocus();
+
         InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(viewHolder.expenseName.getWindowToken(), 0);
 
@@ -239,6 +267,8 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
         expenseArrayList.remove(position);
         notifyDataSetChanged();
         notifyDataSetInvalidated();
+
+        updateBudgetLabel();
 
     }
 
@@ -268,6 +298,7 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 
         //Layout
         ConstraintLayout expenseLayout;
+        LinearLayout expenseDummyLayout;
         ImageButton expenseIcon;
         EditText expenseName;
         EditText expenseBudget;
@@ -285,4 +316,28 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
             }
         }
     }
+
+    private class DoneButtonPress implements TextView.OnEditorActionListener {
+
+        private int position;
+        private ViewHolder viewHolder;
+
+        public DoneButtonPress(int position, ViewHolder viewHolder){
+
+            this.position = position;
+            this.viewHolder = viewHolder;
+        }
+
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    || actionId == EditorInfo.IME_ACTION_DONE) {
+
+                hideKeyboardAndSave(position, viewHolder);
+                return true;
+            }
+            return false;
+        }
+    }
+
 }

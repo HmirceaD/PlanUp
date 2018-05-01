@@ -14,5 +14,21 @@
     <color name="pink">#f092b0</color>
     <color name="lightGray">#b7c0c7</color>
 
+    <array name="rainbow">
+        <item>@color/lightBlue</item>
+        <item>@color/darkBlue</item>
+        <item>@color/mauve</item>
+        <item>@color/red</item>
+        <item>@color/orange</item>
+        <item>@color/lavender</item>
+        <item>@color/purple</item>
+        <item>@color/aqua</item>
+        <item>@color/green</item>
+        <item>@color/mustard</item>
+        <item>@color/darkGray</item>
+        <item>@color/pink</item>
+        <item>@color/lightGray</item>
+    </array>
+
 
 </resources>
