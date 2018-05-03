@@ -1,21 +1,22 @@
 package com.example.mircea.moneymanager.Activities;
 
 import android.content.Intent;
-import android.database.DataSetObserver;
-import android.graphics.Color;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mircea.moneymanager.Adapters.ExpenseListAdapter;
+import com.example.mircea.moneymanager.Adapters.ExpenseRecyclerAdapter;
 import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.Expense;
+import com.example.mircea.moneymanager.RecyclerViewFluff.ShadowDecorator;
+import com.example.mircea.moneymanager.RecyclerViewFluff.VerticalOffsetDecorator;
 
 import java.util.ArrayList;
 
@@ -23,12 +24,12 @@ import java.util.ArrayList;
 public class CreatePlanExpenses extends AppCompatActivity{
 
     //List Stuff
-    private ExpenseListAdapter expenseArrayAdapter;
+    private ExpenseRecyclerAdapter expenseRecyclerAdapter;
     private ArrayList<Expense> expenseArrayList;
 
     //Ui
     private Button goToSavingsButton;
-    private ListView expensesList;
+    private RecyclerView expensesList;
     private FloatingActionButton addExpenseButton;
     private TextView remainingBudgetTextView;
 
@@ -36,10 +37,14 @@ public class CreatePlanExpenses extends AppCompatActivity{
     //TODO this should be initialized at run time from the db/shp
     private float budget = 1337;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_plan_expenses);
+
+        this.getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         setupUi();
     }
@@ -75,16 +80,29 @@ public class CreatePlanExpenses extends AppCompatActivity{
 
         populateInitialExpenses();
 
-        expenseArrayAdapter = new ExpenseListAdapter(expenseArrayList, CreatePlanExpenses.this, budget);
+        expenseRecyclerAdapter = new ExpenseRecyclerAdapter(CreatePlanExpenses.this, R.layout.expense_list_item, expenseArrayList, 1337);
+        expensesList.setHasFixedSize(true);
 
-        expensesList.setAdapter(expenseArrayAdapter);
+        RecyclerView.LayoutManager recyclerLayout = new LinearLayoutManager(this);
+        int verticalSpace = 48;
+        VerticalOffsetDecorator verticalDecorator = new VerticalOffsetDecorator(verticalSpace);
+        ShadowDecorator shadowDecorator = new ShadowDecorator(this, R.drawable.recycler_shadow);
+
+        expensesList.addItemDecoration(shadowDecorator);
+        expensesList.addItemDecoration(verticalDecorator);
+
+        expensesList.setLayoutManager(recyclerLayout);
+
+
+
+        expensesList.setAdapter(expenseRecyclerAdapter);
 
     }
 
     private void addExpense() {
 
         expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f));
-        expenseArrayAdapter.notifyDataSetChanged();
+        expenseRecyclerAdapter.notifyDataSetChanged();
 
         Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show();
     }
