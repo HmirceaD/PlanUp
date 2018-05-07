@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,13 +17,18 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mircea.moneymanager.Adapters.ExpandableWishListAdapter;
+import com.example.mircea.moneymanager.Database.Entities.Database.ExpenseDatabase;
+import com.example.mircea.moneymanager.Database.Entities.ExpenseEntity;
+import com.example.mircea.moneymanager.Database.Entities.WishEntity;
 import com.example.mircea.moneymanager.Listeners.HideKeyboardListener;
 import com.example.mircea.moneymanager.R;
+import com.example.mircea.moneymanager.Raw.Expense;
 import com.example.mircea.moneymanager.Raw.Wish;
 
 import java.util.ArrayList;
@@ -30,6 +36,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CreatePlanSavings extends AppCompatActivity {
+
+    //Storage
+    private SharedPreferences sharedPreferences;
 
     //Adapters
     private ExpandableWishListAdapter expandableWishListAdapter;
@@ -44,6 +53,7 @@ public class CreatePlanSavings extends AppCompatActivity {
     private Button savingsAddWishButton;
     private ExpandableListView expandableListView;
     private ConstraintLayout createSavingsLayout;
+    private EditText savingsSavingEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +64,8 @@ public class CreatePlanSavings extends AppCompatActivity {
     }
 
     private void setupUi() {
+
+        setupSharePref();
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -67,8 +79,15 @@ public class CreatePlanSavings extends AppCompatActivity {
 
         savingsAddWishButton.setOnClickListener((View v)-> wishDialog());
 
+        savingsSavingEditText = findViewById(R.id.savingsSavingEditText);
+
         goToMainActivityButton = findViewById(R.id.goToMainActivityButton);
         goToMainActivityButton.setOnClickListener((View v) -> goToMainActivity());
+    }
+
+    private void setupSharePref() {
+        sharedPreferences = getApplicationContext().getSharedPreferences(getString(R.string.shared_preferences_key),
+                Context.MODE_PRIVATE);
     }
 
     private void initWishList() {
@@ -143,12 +162,39 @@ public class CreatePlanSavings extends AppCompatActivity {
 
         }else{
 
-            Toast.makeText(getApplicationContext(), "Wish must have a name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.toast_wish_list_add_no_name), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void goToMainActivity() {
 
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        if(!savingsSavingEditText.getText().toString().equals("")){
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    sharedPreferences.edit().putFloat(getString(R.string.shared_preferences_wish_savings_key),
+                            Float.parseFloat(savingsSavingEditText.getText().toString())).apply();
+
+                    ArrayList<WishEntity> wishEntityArrayList = new ArrayList<>();
+
+                    for(Wish wish: wishList){
+
+                        wishEntityArrayList.add(new WishEntity(wish.getName(), wish.getName()));
+                    }
+
+                    ExpenseDatabase
+                            .getInstance(getApplicationContext())
+                            .getWishDao()
+                            .insertWishes(wishEntityArrayList);
+                }
+            }).start();
+
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        }else{
+
+            Toast.makeText(getApplicationContext(), getString(R.string.toast_wish_no_savings_warning), Toast.LENGTH_SHORT).show();
+        }
     }
 }

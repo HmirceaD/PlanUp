@@ -122,7 +122,7 @@ public class ExpenseRecyclerAdapter extends RecyclerView.Adapter<ExpenseRecycler
 
             this.expense = expense;
 
-            this.expenseIcon.setImageDrawable(expense.getExpenseIcon());
+            this.expenseIcon.setImageDrawable((mContext).getDrawable(expense.getExpenseIcon()));
             this.expenseName.setText(expense.getExpenseName());
             this.expenseBudget.setText(Float.toString(expense.getExpenseBudget()));
             this.expenseDelete.setImageResource(R.drawable.x_icon);
@@ -273,7 +273,7 @@ public class ExpenseRecyclerAdapter extends RecyclerView.Adapter<ExpenseRecycler
             for(int counter = 0; counter < iconsListId.length; counter++){
                 if(id == iconsListId[counter]){
                     viewHolder.expenseIcon.setImageResource(iconListDrawable[counter]);
-                    expenseArrayList.get(position).setExpenseIcon(ResourcesCompat.getDrawable(mContext.getResources(),iconListDrawable[counter], null));
+                    expenseArrayList.get(position).setExpenseIcon(iconListDrawable[counter]);
                     notifyDataSetChanged();
                 }
             }

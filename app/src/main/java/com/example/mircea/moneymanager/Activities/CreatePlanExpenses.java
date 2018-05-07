@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mircea.moneymanager.Adapters.ExpenseRecyclerAdapter;
+import com.example.mircea.moneymanager.Database.Entities.Database.ExpenseDatabase;
+import com.example.mircea.moneymanager.Database.Entities.ExpenseEntity;
 import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.Expense;
 import com.example.mircea.moneymanager.RecyclerViewFluff.ShadowDecorator;
@@ -20,8 +22,13 @@ import com.example.mircea.moneymanager.RecyclerViewFluff.VerticalOffsetDecorator
 
 import java.util.ArrayList;
 
+import static com.example.mircea.moneymanager.Database.Entities.Database.ExpenseDatabase.getInstance;
+
 
 public class CreatePlanExpenses extends AppCompatActivity{
+
+    //Room Database
+    private static ExpenseDatabase expenseDatabase;
 
     //List Stuff
     private ExpenseRecyclerAdapter expenseRecyclerAdapter;
@@ -92,16 +99,13 @@ public class CreatePlanExpenses extends AppCompatActivity{
         expensesList.addItemDecoration(verticalDecorator);
 
         expensesList.setLayoutManager(recyclerLayout);
-
-
-
         expensesList.setAdapter(expenseRecyclerAdapter);
 
     }
 
     private void addExpense() {
 
-        expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f));
+        expenseArrayList.add(new Expense(R.drawable.car_icon, "Car", 0f));
         expenseRecyclerAdapter.notifyDataSetChanged();
 
         Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show();
@@ -109,14 +113,39 @@ public class CreatePlanExpenses extends AppCompatActivity{
 
     private void populateInitialExpenses() {
 
-        expenseArrayList.add(new Expense(getDrawable(R.drawable.car_icon), "Car", 0f));
-        expenseArrayList.add(new Expense(getDrawable(R.drawable.house_icon), "House", 0f));
-        expenseArrayList.add(new Expense(getDrawable(R.drawable.food_icon), "Food", 0f));
+        expenseArrayList.add(new Expense(R.drawable.car_icon, "Car", 0f));
+        expenseArrayList.add(new Expense(R.drawable.house_icon, "House", 0f));
+        expenseArrayList.add(new Expense(R.drawable.food_icon, "Food", 0f));
     }
 
     private void goToSavings() {
 
-        startActivity(new Intent(getApplicationContext(), CreatePlanSavings.class));
+        if(expenseArrayList.size() < 1){
+            //EmptyList
+            Toast.makeText(getApplicationContext(), getString(R.string.toast_expense_small_list_warning), Toast.LENGTH_SHORT).show();
+        }else{
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    ArrayList<ExpenseEntity> expenseEntityArrayList = new ArrayList<>();
+
+                    for(Expense expense: expenseArrayList){
+
+                        expenseEntityArrayList.add(new ExpenseEntity(expense.getExpenseIcon(), expense.getExpenseName(), expense.getExpenseBudget()));
+                    }
+
+                    ExpenseDatabase
+                            .getInstance(getApplicationContext())
+                            .getExpenseDao()
+                            .insertExpense(expenseEntityArrayList);
+                }
+            }).start();
+
+            startActivity(new Intent(getApplicationContext(), CreatePlanSavings.class));
+
+        }
     }
 
     public float divideBudget(){

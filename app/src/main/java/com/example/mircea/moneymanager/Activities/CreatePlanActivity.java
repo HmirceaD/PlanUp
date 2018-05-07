@@ -1,8 +1,11 @@
 package com.example.mircea.moneymanager.Activities;
 
 import android.app.DatePickerDialog;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mircea.moneymanager.Database.Entities.Plan;
 import com.example.mircea.moneymanager.Listeners.HideKeyboardListener;
 import com.example.mircea.moneymanager.R;
 
@@ -34,7 +38,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class CreatePlanActivity extends AppCompatActivity {
-
+    //Storage
+    private SharedPreferences sharedPreferences;
     //Logic
     private Date startDate, endDate;
 
@@ -67,6 +72,8 @@ public class CreatePlanActivity extends AppCompatActivity {
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        setupStorage();
+
         setupLayout();
 
         myCalendar = Calendar.getInstance();
@@ -80,6 +87,12 @@ public class CreatePlanActivity extends AppCompatActivity {
         setupDateText();
 
         setupSpinner();
+    }
+
+    private void setupStorage() {
+
+        sharedPreferences = getApplicationContext().getSharedPreferences(getString(R.string.shared_preferences_key),
+                Context.MODE_PRIVATE);
     }
 
     private void setupExpenseButton() {
@@ -123,7 +136,6 @@ public class CreatePlanActivity extends AppCompatActivity {
     private void showDateDialog(TextView textView) {
         //display the calendar dialog to select the dates
 
-
         DatePickerDialog datePickerDialog = new DatePickerDialog(getApplicationContext(), new DatePickerListener(textView),
                 myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
 
@@ -164,9 +176,22 @@ public class CreatePlanActivity extends AppCompatActivity {
 
             Toast.makeText(getApplicationContext(), "Please select the dates and budget", Toast.LENGTH_SHORT).show();
         }else{
+
+            saveBudgetToStorage();
             startActivity(new Intent(getApplicationContext(), CreatePlanExpenses.class));
 
         }
+    }
+
+    private void saveBudgetToStorage() {
+
+        sharedPreferences.edit().putFloat(getString(R.string.shared_preferences_budget_key),
+                Float.parseFloat(budgetEditText.getText().toString())).apply();
+        sharedPreferences.edit().putLong(getString(R.string.shared_preferences_start_date_key),
+                startDate.getTime()).apply();
+        sharedPreferences.edit().putLong(getString(R.string.shared_preferences_end_date_key),
+                endDate.getTime()).apply();
+
     }
 
     private void updateTextView(Date date, TextView dateTextView) {

@@ -1,27 +1,26 @@
 package com.example.mircea.moneymanager.Raw;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 
 public class Expense {
 
-    private Drawable expenseIcon;
+    private int expenseIconId;
     private String expenseName;
     private float expenseBudget;
 
     public Expense(){}
 
-    public Expense(Drawable expenseIcon, String expenseName, float expenseBudget){
+    public Expense(int expenseIconId, String expenseName, float expenseBudget){
 
-        this.expenseIcon = expenseIcon;
+        this.expenseIconId = expenseIconId;
         this.expenseName = expenseName;
         this.expenseBudget = expenseBudget;
 
     }
 
-    public Drawable getExpenseIcon() {return expenseIcon;}
+    public int getExpenseIcon() {return expenseIconId;}
 
-    public void setExpenseIcon(Drawable expenseIcon) {this.expenseIcon = expenseIcon;}
+    public void setExpenseIcon(int expenseIcon) {this.expenseIconId = expenseIcon;}
 
     public String getExpenseName() {return expenseName;}
 
