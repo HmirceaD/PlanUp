@@ -60,6 +60,10 @@
 
     <string name="shared_preferences_wish_savings_key">WishSavings</string>
 
+    <string name="transaction_alert_dialog_title">Create a budgetTransaction</string>
+    <string name="transaction_alert_dialog_add">Add Transaction</string>
+
+
     <string name="expense_entity_drawable">ExpenseDrawable</string>
     <string name="expense_entity_name">ExpenseName</string>
     <string name="expense_entity_budget">ExpenseBudget</string>
@@ -67,6 +71,13 @@
     <string name="toast_expense_small_list_warning">You must add at least one expense to continue</string>
     <string name="toast_wish_list_add_no_name">Wish must have a name</string>
     <string name="toast_wish_no_savings_warning">You must add a savings goal </string>
+
+    <string name="transaction_item_category">Category:</string>
+    <string name="transaction_item_name">Name:</string>
+    <string name="transaction_item_sum">Sum:</string>
+    <string name="transaction_item_date">Date:</string>
+    <string name="transaction_item_description">Description:</string>
+
 
     <string-array name="currency_array">
         <item>RON</item>

@@ -67,7 +67,6 @@ public class ExpenseRecyclerAdapter extends RecyclerView.Adapter<ExpenseRecycler
 
         WindowManager windowManager = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
         int width = windowManager.getDefaultDisplay().getWidth();
-        int height = windowManager.getDefaultDisplay().getHeight();
         view.setLayoutParams(new RecyclerView.LayoutParams(width, RecyclerView.LayoutParams.WRAP_CONTENT));
 
         ExpenseHolder expenseHodler = new ExpenseHolder(this.mContext, view);
@@ -87,9 +86,6 @@ public class ExpenseRecyclerAdapter extends RecyclerView.Adapter<ExpenseRecycler
 
         return this.expenseArrayList.size();
     }
-
-
-
 
     public class ExpenseHolder extends RecyclerView.ViewHolder{
 
@@ -142,7 +138,6 @@ public class ExpenseRecyclerAdapter extends RecyclerView.Adapter<ExpenseRecycler
             this.expenseIcon.setOnFocusChangeListener(new ClickOnFocus());
 
             this.expenseLayout.setOnClickListener((View v) ->  hideKeyboardAndSave(position, this));
-
 
         }
 
