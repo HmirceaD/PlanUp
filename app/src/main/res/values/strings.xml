@@ -63,6 +63,12 @@
     <string name="transaction_alert_dialog_title">Create a budgetTransaction</string>
     <string name="transaction_alert_dialog_add">Add Transaction</string>
 
+    <string name = "toast_transaction_added">Transaction Added</string>
+
+    <string name = "delete_transaction_alert_title">Delete this transaction?</string>
+    <string name = "delete">Delete</string>
+    <string name = "yes">Yes</string>
+    <string name = "no">No</string>
 
     <string name="expense_entity_drawable">ExpenseDrawable</string>
     <string name="expense_entity_name">ExpenseName</string>

@@ -114,6 +114,31 @@
         app:layout_constraintStart_toEndOf="@+id/textView7"
         app:layout_constraintTop_toTopOf="@+id/textView7" />
 
+    <TextView
+        android:id="@+id/alertTransactionDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:ems="10"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toBottomOf="@+id/textView9"
+        app:layout_constraintEnd_toStartOf="@+id/alertTransactionTodayCheckbox"
+        app:layout_constraintStart_toEndOf="@+id/textView9"
+        app:layout_constraintTop_toTopOf="@+id/textView9" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#000"
+        app:layout_constraintLeft_toLeftOf="@+id/alertTransactionDate"
+        app:layout_constraintRight_toRightOf="@+id/alertTransactionDate"
+        app:layout_constraintTop_toBottomOf="@+id/alertTransactionDate" />
+
     <Spinner
         android:id="@+id/alertTransactionCategoryNameSpinner"
         android:layout_width="0dp"
@@ -141,21 +166,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView8"
         app:layout_constraintTop_toTopOf="@+id/textView8" />
-
-    <EditText
-        android:id="@+id/alertTransactionDate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="@+id/textView9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView9"
-        app:layout_constraintTop_toTopOf="@+id/textView9" />
 
     <EditText
         android:id="@+id/alertTransactionDescription"
@@ -212,5 +222,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/alertTransactionDescription"
         app:layout_constraintVertical_bias="1.0" />
+
+    <CheckBox
+        android:id="@+id/alertTransactionTodayCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Today?"
+        app:layout_constraintBottom_toBottomOf="@+id/alertTransactionDate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/alertTransactionDate" />
 
 </android.support.constraint.ConstraintLayout>

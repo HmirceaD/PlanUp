@@ -1,6 +1,11 @@
 package com.example.mircea.moneymanager.Fragments;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.AsyncTask;
@@ -15,13 +20,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.mircea.moneymanager.Activities.CreatePlanActivity;
 import com.example.mircea.moneymanager.Activities.MainActivity;
 import com.example.mircea.moneymanager.Adapters.TransactionRecyclerAdapter;
 import com.example.mircea.moneymanager.Database.Entities.Database.ExpenseDatabase;
@@ -34,17 +44,31 @@ import com.github.mikephil.charting.charts.PieChart;
 
 import org.angmarch.views.NiceSpinner;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class TransactionsFragment extends Fragment {
+
+    //Storage
+    private SharedPreferences sharedPreferences;
+
+    //Logic
+    private Date transactionDate;
+    private Calendar myCalendar;
+    private int iconId = -1;
 
     //UI
     private Spinner alertTransactionCategoryNameSpinner;
     private FloatingActionButton floatingActionButton;
     private RecyclerView transactionRecyclerView;
+
+    //UI grouping
+    List<View> alertTransactionEditTextGroup;
 
     //Expense
     private List<ExpenseEntity> expenseEntityList;
@@ -52,6 +76,8 @@ public class TransactionsFragment extends Fragment {
     //RecyclerView stuff
     private TransactionRecyclerAdapter transactionRecyclerAdapter;
     private List<BudgetTransaction> budgetTransactionArrayList;
+    private Date minCalendarDate;
+    private Date maxCalendarDate;
 
     public TransactionsFragment(){}
 
@@ -74,11 +100,22 @@ public class TransactionsFragment extends Fragment {
 
     private void setupUi(View view) {
 
+        setupSharePreferences();
+
         setupFloatingButton(view);
 
         recyclerInit(view);
 
-        //setupExpenseList();
+        myCalendar = Calendar.getInstance();
+    }
+
+    private void setupSharePreferences() {
+
+        sharedPreferences = getContext().getSharedPreferences(getString(R.string.shared_preferences_key),
+                Context.MODE_PRIVATE);
+
+        minCalendarDate = new Date(sharedPreferences.getLong(getString(R.string.shared_preferences_start_date_key), 0));
+        maxCalendarDate = new Date(sharedPreferences.getLong(getString(R.string.shared_preferences_end_date_key), 0));
     }
 
     private void setupExpenseList() {
@@ -132,7 +169,6 @@ public class TransactionsFragment extends Fragment {
 
         setAlertListeners(alertDialog, myView);
         alertDialog.show();
-        //===== </StackOverflow>
     }
 
     private void setAlertListeners(AlertDialog alert, View view) {
@@ -151,6 +187,8 @@ public class TransactionsFragment extends Fragment {
 
                 try{
                     alertTransactionCategoryIcon.setImageResource(expenseEntityList.get(position).expenseDrawableId);
+                    iconId = expenseEntityList.get(position).expenseDrawableId;
+
                 }catch (Resources.NotFoundException ex){
                     alertTransactionCategoryIcon.setImageResource(android.R.color.transparent);
                     ex.printStackTrace();
@@ -163,12 +201,27 @@ public class TransactionsFragment extends Fragment {
             }
         });
 
-        List<EditText> alertTransactionEditTextGroup = new ArrayList<>();
+        alertTransactionEditTextGroup = new ArrayList<>();
 
+        //0 NAME
         alertTransactionEditTextGroup.add(view.findViewById(R.id.alertTransactionName));
+
+        //1 SUM
         alertTransactionEditTextGroup.add(view.findViewById(R.id.alertTransactionSum));
+
+        //2 DATE
         alertTransactionEditTextGroup.add(view.findViewById(R.id.alertTransactionDate));
+
+        //3 DESC
         alertTransactionEditTextGroup.add(view.findViewById(R.id.alertTransactionDescription));
+
+        //4 CATEGORY NAME
+        alertTransactionEditTextGroup.add(alertTransactionCategoryNameSpinner);
+
+        //5 CATEGORY ID
+        alertTransactionEditTextGroup.add(alertTransactionCategoryIcon);
+
+        view.findViewById(R.id.alertTransactionDate).setOnClickListener((View v)-> showCalendar());
 
         //Add Button
         view.findViewById(R.id.alertTransactionAddButton).setOnClickListener((View v)-> {
@@ -184,29 +237,48 @@ public class TransactionsFragment extends Fragment {
         view.findViewById(R.id.alertTransactionCancelButton).setOnClickListener((View v)-> alert.cancel());
     }
 
-    private void saveTransactionInDatabase(List<EditText> alertTransactionEditTextGroup) {
+    private void showCalendar() {
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity().getApplicationContext(), new DatePickerListener(),
+                myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.getDatePicker().setMinDate(minCalendarDate.getTime());
+        datePickerDialog.getDatePicker().setMaxDate(maxCalendarDate.getTime());
+
+        datePickerDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
+        datePickerDialog.show();
+    }
+
+    private void saveTransactionInDatabase(List<View> alertTransactionEditTextGroup) {
 
         SaveTransactionBackgroundThread saveThread = new SaveTransactionBackgroundThread();
 
-        //saveThread.execute(new BudgetTransaction(alertTransactionEditTextGroup.get(0).getText().toString()))
+        saveThread.execute(buildBudgetTransaction(alertTransactionEditTextGroup));
 
     }
 
-    private boolean checkAlertDialog(List<EditText> alertTransactionEditTextGroup) {
+    private BudgetTransaction buildBudgetTransaction(List<View> alertTransactionEditTextGroup) {
 
-        boolean isEmpty = true;
+        //WTF IS WRONG with me :( vvvvvvvvv
+        return new BudgetTransaction(iconId,
+                expenseEntityList.get(((Spinner)alertTransactionEditTextGroup.get(4)).getSelectedItemPosition()).expenseName,
+                ((EditText)alertTransactionEditTextGroup.get(0)).getText().toString(),
+                Integer.parseInt(((EditText)alertTransactionEditTextGroup.get(1)).getText().toString()),
+                transactionDate,
+                ((EditText)alertTransactionEditTextGroup.get(3)).getText().toString());
+    }
 
-        for(int i = 0; i < 3; i++){
+    private boolean checkAlertDialog(List<View> alertTransactionEditTextGroup) {
 
-            if(alertTransactionEditTextGroup.get(i).getText().toString().equals("")){
-                isEmpty = false;
+            if(!((EditText)alertTransactionEditTextGroup.get(0)).getText().toString().equals("") &&
+                    !((EditText)alertTransactionEditTextGroup.get(1)).getText().toString().equals("") &&
+                    !((TextView)alertTransactionEditTextGroup.get(2)).getText().toString().equals("") && iconId != -1){
+                return true;
 
             }else{
                 Toast.makeText(getContext(), "Please put something in the first 3 fields", Toast.LENGTH_SHORT).show();
+                return false;
             }
-        }
-
-        return isEmpty;
 
     }
 
@@ -216,12 +288,61 @@ public class TransactionsFragment extends Fragment {
         task.execute(budgetTransactionArrayList);
     }
 
+    private class DatePickerListener implements DatePickerDialog.OnDateSetListener{
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+            //TODO Test on actual deviceeeeeee
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, month);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            //SHOW A HOUR THING
+            int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
+            int minute = myCalendar.get(Calendar.MINUTE);
+
+            TimePickerDialog mTimePicker;
+            mTimePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        myCalendar.set(Calendar.HOUR_OF_DAY, selectedHour);
+                        myCalendar.set(Calendar.MINUTE, selectedMinute);
+
+                        transactionDate = myCalendar.getTime();
+                        Log.i("ZILE GUTA", myCalendar.toString());
+
+                        setDateInDateTextView();
+                }
+            }, hour, minute, true);//Yes 24 hour time
+
+
+            mTimePicker.setTitle("Select Time");
+            mTimePicker.show();
+        }
+    }
+    //TODO CHECK FOR AND SUBTRACT FROM THE BUDGET
+
+    private void setDateInDateTextView() {
+
+        String myFormat = "E/dd/MM/yy hh:mm";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+
+        ((TextView)alertTransactionEditTextGroup.get(2)).setText(sdf.format(transactionDate));
+    }
+
     private class SaveTransactionBackgroundThread extends AsyncTask<BudgetTransaction, Void, Void>{
         @Override
         protected void onPostExecute(Void aVoid) {
 
+            Toast.makeText(getContext(), getString(R.string.toast_transaction_added), Toast.LENGTH_SHORT).show();
+
+            Intent it = new Intent(getContext(), MainActivity.class);
+            it.putExtra("CURRENT_PAGE", 1);
+
             ((MainActivity)getContext()).finish();
-            startActivity(((MainActivity)getContext()).getIntent());
+            getContext().startActivity(it);
+
         }
 
         @Override

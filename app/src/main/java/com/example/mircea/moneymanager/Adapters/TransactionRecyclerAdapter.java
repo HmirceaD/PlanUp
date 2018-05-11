@@ -1,7 +1,10 @@
 package com.example.mircea.moneymanager.Adapters;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +14,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.mircea.moneymanager.Activities.MainActivity;
+import com.example.mircea.moneymanager.Database.Entities.Database.ExpenseDatabase;
 import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.BudgetTransaction;
 
@@ -44,6 +50,7 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
         TransactionHolder transactionHolder = new TransactionHolder(this.mContext, view);
         return transactionHolder;
     }
+    //TODO CHANGE LAYOUT SO IT DISPLAY THE DATE AND IF THE DESC IS TO LARGE go ...
 
     @Override
     public void onBindViewHolder(TransactionHolder holder, int position) {
@@ -51,6 +58,7 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
         BudgetTransaction budgetTransaction = this.budgetTransactionArrayList.get(position);
 
         holder.bindExpense(budgetTransaction);
+
     }
 
     @Override
@@ -58,7 +66,7 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
         return this.budgetTransactionArrayList.size();
     }
 
-    public class TransactionHolder extends RecyclerView.ViewHolder {
+    public class TransactionHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener{
 
         private final ConstraintLayout transitionLayout;
         private final LinearLayout transitionDummyLayout;
@@ -70,12 +78,14 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
         private final TextView transitionDesc;
 
         private Context mContext;
+        private AlertDialog alertDialog;
         //private BudgetTransaction transaction;
 
         public TransactionHolder(Context mContext, View itemView) {
 
             super(itemView);
 
+            itemView.setOnLongClickListener(this);
             this.mContext = mContext;
 
             this.transitionLayout = itemView.findViewById(R.id.transactionItemLayout);
@@ -96,12 +106,59 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
             this.transitionName.setText(budgetTransaction.getTransactionName());
             this.transitionSum.setText(Integer.toString(budgetTransaction.getTransactionSum()));
 
-            String myFormat = "E/dd/MM/yy";
+            String myFormat = "E/dd/MM/yy hh:mm";
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
 
             this.transitionDate.setText(sdf.format(budgetTransaction.getTransactionDate()));
             this.transitionDesc.setText(budgetTransaction.getTransactionDesc());
 
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
+            LayoutInflater inflater = ((MainActivity)mContext).getLayoutInflater();
+            final View myView = inflater.inflate(R.layout.delete_transaction_dialog, null);
+            dialogBuilder.setView(myView);
+
+            alertDialog = dialogBuilder.create();
+            //Listeners
+
+            myView.findViewById(R.id.deleteTransactionAlertNo).setOnClickListener((View view)-> alertDialog.cancel());
+            myView.findViewById(R.id.deleteTransactionAlertYes).setOnClickListener((View view)-> {
+                DeleteItemBackgroundThread deleteItemBackgroundThread = new DeleteItemBackgroundThread();
+                deleteItemBackgroundThread.execute(getAdapterPosition());
+            });
+
+
+            alertDialog.show();
+
+            return false;
+        }
+
+        private class DeleteItemBackgroundThread extends AsyncTask<Integer, Integer, Void>{
+            @Override
+            protected void onPostExecute(Void aVoid) {
+
+                alertDialog.cancel();
+
+                Intent it = new Intent(mContext, MainActivity.class);
+                it.putExtra("CURRENT_PAGE", 1);
+                ((MainActivity)mContext).finish();
+                //TODO FINISH THIS SO IT STARTS CORRECTLY
+                //((MainActivity)mContext).getIntent().putExtra("CURRENT_PAGE", 1);
+                mContext.startActivity(it);
+            }
+
+            @Override
+            protected Void doInBackground(Integer... integers) {
+
+                ExpenseDatabase.getInstance(mContext).getTransactionDao().deleteTransactions(
+                        budgetTransactionArrayList.get(integers[0]));
+
+                return null;
+            }
         }
 
     }

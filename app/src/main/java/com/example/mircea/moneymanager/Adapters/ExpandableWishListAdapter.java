@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class ExpandableWishListAdapter extends BaseExpandableListAdapter {
+public class   ExpandableWishListAdapter extends BaseExpandableListAdapter {
 
     private Context mContext;
     private ArrayList<String> wishHeaders;

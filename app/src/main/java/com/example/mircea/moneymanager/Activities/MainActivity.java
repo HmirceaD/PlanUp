@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,6 +24,9 @@ public class MainActivity extends AppCompatActivity
     private ViewPager viewPager;
     private TabLayout tabLayout;
 
+    //Logic
+    private int startingPosition = 0;
+
     //Adapters
     private MainActivityPagerAdapter mainActivityPagerAdapter;
 
@@ -34,10 +38,28 @@ public class MainActivity extends AppCompatActivity
 
         drawerInit();
         uiAndAdaptersInit();
+        getPosition();
 
         viewPager.setAdapter(mainActivityPagerAdapter);
+        viewPager.setCurrentItem(startingPosition);
         tabLayout.setupWithViewPager(viewPager);
 
+    }
+
+    private void getPosition() {
+
+        Intent intent = getIntent();
+
+        if (intent != null) {
+
+            try{
+                startingPosition = intent.getIntExtra("CURRENT_PAGE",0);
+
+            }catch (Exception ex){
+                ex.printStackTrace();
+                startingPosition = 0;
+            }
+        }
     }
 
     private void uiAndAdaptersInit() {
