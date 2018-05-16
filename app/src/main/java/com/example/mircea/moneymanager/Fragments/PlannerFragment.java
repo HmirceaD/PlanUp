@@ -1,5 +1,7 @@
 package com.example.mircea.moneymanager.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mircea.moneymanager.R;
 import com.github.mikephil.charting.charts.PieChart;
@@ -23,8 +26,10 @@ import java.util.List;
 public class PlannerFragment extends Fragment{
 
     //Global Values
-    //TODO(2) this needs to be a shared preferences variable
-    private int budget;
+    private float budget;
+
+    //Storage
+    private SharedPreferences sharedPreferences;
 
     //Ui
     private PieChart placintaChart;
@@ -89,14 +94,35 @@ public class PlannerFragment extends Fragment{
         placintaChart = view.findViewById(R.id.placintaChart);
         budgetTextView = view.findViewById(R.id.budgetTextView);
 
-        budget = 302;
+        initSharedPreferences();
 
-        budgetTextView.setText(getResources().getString(R.string.money_left) + budget);
+        initBudget();
 
         arrayInit();
         populateList();
 
         return view;
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initBudget();
+
+    }
+
+
+    private void initBudget() {
+        budget = sharedPreferences.getFloat(getString(R.string.shared_preferences_remaining_budget_key), 0f);
+
+        budgetTextView.setText(getResources().getString(R.string.money_left) + budget);
+    }
+
+
+    private void initSharedPreferences() {
+
+        sharedPreferences = getContext().getSharedPreferences(getString(R.string.shared_preferences_key),
+                Context.MODE_PRIVATE);
     }
 }

@@ -55,6 +55,7 @@
 
     <string name="shared_preferences_key">ROWROWROWYOURBOATGENTLYDOWNTHESTREAM</string>
     <string name="shared_preferences_budget_key">PlanBudget</string>
+    <string name="shared_preferences_remaining_budget_key">RemainingBudget</string>
     <string name="shared_preferences_start_date_key">PlanStartDate</string>
     <string name="shared_preferences_end_date_key">PlanEndDate</string>
 

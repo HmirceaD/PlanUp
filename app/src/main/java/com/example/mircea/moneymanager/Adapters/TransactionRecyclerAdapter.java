@@ -4,8 +4,10 @@ package com.example.mircea.moneymanager.Adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.mircea.moneymanager.Activities.MainActivity;
 import com.example.mircea.moneymanager.Database.Entities.Database.ExpenseDatabase;
+import com.example.mircea.moneymanager.Database.Entities.LiveData.ViewModels.BudgetTransactionViewModel;
 import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.BudgetTransaction;
 
@@ -30,10 +33,29 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
 
     private Context mContext;
     private List<BudgetTransaction> budgetTransactionArrayList;
+    private SharedPreferences sharedPreferences;
+    private BudgetTransactionViewModel budgetTransactionViewModel;
 
-    public TransactionRecyclerAdapter(Context mContext, List<BudgetTransaction> budgetTransactionArrayList) {
+    public TransactionRecyclerAdapter(Context mContext, List<BudgetTransaction> budgetTransactionArrayList, BudgetTransactionViewModel budgetTransactionViewModel) {
         this.mContext = mContext;
         this.budgetTransactionArrayList = budgetTransactionArrayList;
+        this.budgetTransactionViewModel = budgetTransactionViewModel;
+
+        sharedPreferences = mContext.getSharedPreferences(mContext.getString(R.string.shared_preferences_key),
+                Context.MODE_PRIVATE);
+    }
+
+    public void setData(List<BudgetTransaction> newData){
+        if(budgetTransactionArrayList != null){
+
+            TransDiffCallback transDiffCallback = new TransDiffCallback(budgetTransactionArrayList, newData);
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(transDiffCallback);
+
+            budgetTransactionArrayList.clear();
+            budgetTransactionArrayList.addAll(newData);
+            diffResult.dispatchUpdatesTo(this);
+        }
+
     }
 
     @Override
@@ -127,10 +149,12 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
 
             myView.findViewById(R.id.deleteTransactionAlertNo).setOnClickListener((View view)-> alertDialog.cancel());
             myView.findViewById(R.id.deleteTransactionAlertYes).setOnClickListener((View view)-> {
-                DeleteItemBackgroundThread deleteItemBackgroundThread = new DeleteItemBackgroundThread();
-                deleteItemBackgroundThread.execute(getAdapterPosition());
-            });
+                //DeleteItemBackgroundThread deleteItemBackgroundThread = new DeleteItemBackgroundThread();
+                //deleteItemBackgroundThread.execute(getAdapterPosition());
+                alertDialog.cancel();
+                budgetTransactionViewModel.deleteTransaction(budgetTransactionArrayList.get(0));
 
+            });
 
             alertDialog.show();
 
@@ -139,15 +163,17 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
 
         private class DeleteItemBackgroundThread extends AsyncTask<Integer, Integer, Void>{
             @Override
-            protected void onPostExecute(Void aVoid) {
+            protected void onPostExecute(Void aVoid){
 
                 alertDialog.cancel();
 
+                notifyDataSetChanged();
+
                 Intent it = new Intent(mContext, MainActivity.class);
                 it.putExtra("CURRENT_PAGE", 1);
+
+
                 ((MainActivity)mContext).finish();
-                //TODO FINISH THIS SO IT STARTS CORRECTLY
-                //((MainActivity)mContext).getIntent().putExtra("CURRENT_PAGE", 1);
                 mContext.startActivity(it);
             }
 
@@ -161,5 +187,34 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
             }
         }
 
+    }
+    class TransDiffCallback extends DiffUtil.Callback {
+
+        private final List<BudgetTransaction> oldPosts, newPosts;
+
+        public TransDiffCallback(List<BudgetTransaction> oldPosts, List<BudgetTransaction> newPosts) {
+            this.oldPosts = oldPosts;
+            this.newPosts = newPosts;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldPosts.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newPosts.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldPosts.get(oldItemPosition).getCategoryName() == newPosts.get(newItemPosition).getCategoryName();
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldPosts.get(oldItemPosition).equals(newPosts.get(newItemPosition));
+        }
     }
 }

@@ -104,6 +104,7 @@ public class CreatePlanSavings extends AppCompatActivity {
 
         /**Sets the dialog wish up**/
         //===== <StackOverflow>
+        //TODO change this shit
         Rect displayRectangle = new Rect();
 
         Window window = this.getWindow();

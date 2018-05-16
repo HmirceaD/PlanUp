@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class CreatePlanActivity extends AppCompatActivity {
+
     //Storage
     private SharedPreferences sharedPreferences;
     //Logic

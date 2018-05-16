@@ -1,5 +1,6 @@
 package com.example.mircea.moneymanager.Database.Entities.DAO;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -15,7 +16,10 @@ import java.util.List;
 public interface TransactionDao {
 
     @Query("SELECT * FROM BudgetTransaction")
-    List<BudgetTransaction> getTransactions();
+    LiveData<List<BudgetTransaction>> getTransactions();
+
+    @Query("SELECT * FROM BudgetTransaction")
+    List<BudgetTransaction> getTransactionsAsync();
 
     @Insert
     void insertTransactions(List<BudgetTransaction> budgetTransactions);
