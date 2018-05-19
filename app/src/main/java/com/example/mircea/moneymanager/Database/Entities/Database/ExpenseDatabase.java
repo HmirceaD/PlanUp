@@ -16,7 +16,7 @@ import com.example.mircea.moneymanager.Database.Entities.WishEntity;
 import com.example.mircea.moneymanager.Raw.BudgetTransaction;
 import com.example.mircea.moneymanager.Raw.Expense;
 
-@Database(entities = {ExpenseEntity.class, WishEntity.class, BudgetTransaction.class}, version = 4)
+@Database(entities = {ExpenseEntity.class, WishEntity.class, BudgetTransaction.class}, version = 5)
 @TypeConverters({Converter.class})
 public abstract class ExpenseDatabase extends RoomDatabase {
 
@@ -26,7 +26,7 @@ public abstract class ExpenseDatabase extends RoomDatabase {
     public static ExpenseDatabase getInstance(Context context){
 
         if(expenseDatabase == null){
-            expenseDatabase = Room.databaseBuilder(context, ExpenseDatabase.class, DB_Name).fallbackToDestructiveMigration().build();
+            expenseDatabase = Room.databaseBuilder(context, ExpenseDatabase.class, DB_Name).build();
         }
 
         return expenseDatabase;

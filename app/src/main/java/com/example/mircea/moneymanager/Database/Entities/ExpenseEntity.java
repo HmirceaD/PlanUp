@@ -16,6 +16,9 @@ public class ExpenseEntity {
     @ColumnInfo(name = "ExpenseName")
     public String expenseName;
 
+    @ColumnInfo(name = "ExpenseSpent")
+    public float expenseSpent;
+
     @ColumnInfo(name = "ExpenseBudget")
     public float expenseBudget;
 
@@ -24,5 +27,6 @@ public class ExpenseEntity {
         this.expenseDrawableId = expenseDrawableId;
         this.expenseName = expenseName;
         this.expenseBudget = expenseBudget;
+        this.expenseSpent = 0f;
     }
 }

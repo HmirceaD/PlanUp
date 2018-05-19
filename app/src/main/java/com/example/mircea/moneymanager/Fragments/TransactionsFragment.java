@@ -40,6 +40,7 @@ import com.example.mircea.moneymanager.Adapters.TransactionRecyclerAdapter;
 import com.example.mircea.moneymanager.Database.Entities.Database.ExpenseDatabase;
 import com.example.mircea.moneymanager.Database.Entities.ExpenseEntity;
 import com.example.mircea.moneymanager.Database.Entities.LiveData.ViewModels.BudgetTransactionViewModel;
+import com.example.mircea.moneymanager.Database.Entities.LiveData.ViewModels.ExpenseViewModel;
 import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.BudgetTransaction;
 import com.example.mircea.moneymanager.RecyclerViewFluff.ShadowDecorator;
@@ -58,7 +59,9 @@ import java.util.Locale;
 
 public class TransactionsFragment extends Fragment {
 
+    //ViewModels
     private BudgetTransactionViewModel budgetTransactionViewModel;
+    private ExpenseViewModel expenseViewModel;
 
     //Storage
     private SharedPreferences sharedPreferences;
@@ -86,6 +89,7 @@ public class TransactionsFragment extends Fragment {
     private Date minCalendarDate;
     private Date maxCalendarDate;
     private DatePickerDialog datePickerDialog;
+    private int positionOfExpense;
 
     public TransactionsFragment(){}
 
@@ -108,6 +112,8 @@ public class TransactionsFragment extends Fragment {
 
     private void setupUi(View view) {
 
+        setupViewModels();
+
         setupSharePreferences();
 
         setupFloatingButton(view);
@@ -128,12 +134,15 @@ public class TransactionsFragment extends Fragment {
 
     private void setupExpenseList() {
 
-        budgetTransactionViewModel = ViewModelProviders.of(this).get(BudgetTransactionViewModel.class);
-
         expenseEntityList = new ArrayList<>();
         ExpensesBackgroundThread expenseTask = new ExpensesBackgroundThread();
         expenseTask.execute();
 
+    }
+
+    private void setupViewModels() {
+        budgetTransactionViewModel = ViewModelProviders.of(this).get(BudgetTransactionViewModel.class);
+        expenseViewModel = ViewModelProviders.of(this).get(ExpenseViewModel.class);
     }
 
     private void setupFloatingButton(View view) {
@@ -148,7 +157,8 @@ public class TransactionsFragment extends Fragment {
 
         transactionRecyclerView = view.findViewById(R.id.transactionRecyclerView);
         budgetTransactionArrayList = new ArrayList<>();
-        transactionRecyclerAdapter = new TransactionRecyclerAdapter(getContext(), budgetTransactionArrayList, budgetTransactionViewModel);
+        transactionRecyclerAdapter = new TransactionRecyclerAdapter(getContext(), budgetTransactionArrayList,
+                budgetTransactionViewModel,expenseViewModel, TransactionsFragment.this);
 
         getArrayListTransactions();
 
@@ -167,9 +177,7 @@ public class TransactionsFragment extends Fragment {
         transactionRecyclerView.setAdapter(transactionRecyclerAdapter);
 
         budgetTransactionViewModel.getAllTransactions().observe(this, transactions -> transactionRecyclerAdapter.setData(transactions));
-
     }
-
 
     @Override
     public void onPause() {
@@ -200,13 +208,15 @@ public class TransactionsFragment extends Fragment {
         ImageView alertTransactionCategoryIcon = view.findViewById(R.id.alertTransactionCategoryIcon);
         alertTransactionCategoryIcon.setImageResource(android.R.color.transparent);
 
+        positionOfExpense = 0;
+
         //=========Listeners
         alertTransactionCategoryNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //SET THE ICON OF THE EXPENSE
-
                 try{
+                    positionOfExpense = position;
                     alertTransactionCategoryIcon.setImageResource(expenseEntityList.get(position).expenseDrawableId);
                     iconId = expenseEntityList.get(position).expenseDrawableId;
 
@@ -246,13 +256,13 @@ public class TransactionsFragment extends Fragment {
 
         //Add Button
         view.findViewById(R.id.alertTransactionAddButton).setOnClickListener((View v)-> {
-
             //CHECK IF EVERYTHING IS GOOD THEN SAVE TO THE DB AND UPDATE STUFF I GUESS
             if(checkAlertDialog(alertTransactionEditTextGroup)){
                 //TODO DO THIS FOR REST OF STUFF
                 /**Save this with live data***/
                 alert.cancel();
                 budgetTransactionViewModel.saveTransaction(buildBudgetTransaction(alertTransactionEditTextGroup));
+                updateExpense(alertTransactionEditTextGroup);
             }
 
         });
@@ -262,6 +272,14 @@ public class TransactionsFragment extends Fragment {
 
         //Cancel Button
         view.findViewById(R.id.alertTransactionCancelButton).setOnClickListener((View v)-> alert.cancel());
+    }
+
+    private void updateExpense(List<View> alertTransactionEditTextGroup) {
+
+        ExpenseEntity expenseEntity = expenseEntityList.get(positionOfExpense);
+
+        expenseEntity.expenseSpent = Float.parseFloat(((EditText)alertTransactionEditTextGroup.get(1)).getText().toString());
+        expenseViewModel.updateExpense(expenseEntity);
     }
 
     private void todayChecked(boolean isChecked) {
@@ -295,8 +313,7 @@ public class TransactionsFragment extends Fragment {
 
     }
 
-
-    private BudgetTransaction buildBudgetTransaction(List<View> alertTransactionEditTextGroup) {
+    private BudgetTransaction buildBudgetTransaction (List<View> alertTransactionEditTextGroup){
 
         //WTF IS WRONG with me :( vvvvvvvvv
         return new BudgetTransaction(iconId,
@@ -326,7 +343,14 @@ public class TransactionsFragment extends Fragment {
         TransactionBackgroundThread task = new TransactionBackgroundThread();
         task.execute(budgetTransactionArrayList);
 
+    }
 
+    public int getExpensePosition(){
+        return positionOfExpense;
+    }
+
+    public List<ExpenseEntity> getExpenseEntityList(){
+        return expenseEntityList;
     }
 
     private class DatePickerListener implements DatePickerDialog.OnDateSetListener{
@@ -395,7 +419,8 @@ public class TransactionsFragment extends Fragment {
         protected void onPostExecute(List<BudgetTransaction> budgetTransactions) {
 
             budgetTransactionArrayList = budgetTransactions;
-            transactionRecyclerAdapter = new TransactionRecyclerAdapter(getContext(), budgetTransactionArrayList, budgetTransactionViewModel);
+            transactionRecyclerAdapter = new TransactionRecyclerAdapter(getContext(), budgetTransactionArrayList,
+                    budgetTransactionViewModel, expenseViewModel, TransactionsFragment.this);
             transactionRecyclerView.setAdapter(transactionRecyclerAdapter);
         }
 
@@ -418,6 +443,8 @@ public class TransactionsFragment extends Fragment {
             for(ExpenseEntity expenseEntity:expenses){
 
                 expenseNames.add(expenseEntity.expenseName);
+                //TODO TEST THAT THIS WORKS MY GUY
+                Log.e("AM PUTA MARE JAJA", Float.toString(expenseEntity.expenseSpent));
             }
 
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),

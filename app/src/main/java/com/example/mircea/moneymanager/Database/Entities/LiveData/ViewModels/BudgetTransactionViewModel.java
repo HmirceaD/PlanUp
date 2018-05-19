@@ -13,10 +13,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Created by Mircea on 15.05.2018.
- */
-
 public class BudgetTransactionViewModel extends AndroidViewModel {
 
     private TransactionDao transactionDao;

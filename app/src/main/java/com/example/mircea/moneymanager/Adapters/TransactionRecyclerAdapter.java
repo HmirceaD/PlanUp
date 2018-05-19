@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +23,10 @@ import android.widget.Toast;
 
 import com.example.mircea.moneymanager.Activities.MainActivity;
 import com.example.mircea.moneymanager.Database.Entities.Database.ExpenseDatabase;
+import com.example.mircea.moneymanager.Database.Entities.ExpenseEntity;
 import com.example.mircea.moneymanager.Database.Entities.LiveData.ViewModels.BudgetTransactionViewModel;
+import com.example.mircea.moneymanager.Database.Entities.LiveData.ViewModels.ExpenseViewModel;
+import com.example.mircea.moneymanager.Fragments.TransactionsFragment;
 import com.example.mircea.moneymanager.R;
 import com.example.mircea.moneymanager.Raw.BudgetTransaction;
 
@@ -35,11 +41,16 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
     private List<BudgetTransaction> budgetTransactionArrayList;
     private SharedPreferences sharedPreferences;
     private BudgetTransactionViewModel budgetTransactionViewModel;
+    private ExpenseViewModel expenseViewModel;
+    private TransactionsFragment thisFragment;
 
-    public TransactionRecyclerAdapter(Context mContext, List<BudgetTransaction> budgetTransactionArrayList, BudgetTransactionViewModel budgetTransactionViewModel) {
+    public TransactionRecyclerAdapter(Context mContext, List<BudgetTransaction> budgetTransactionArrayList,
+                                      BudgetTransactionViewModel budgetTransactionViewModel, ExpenseViewModel expenseViewModel, TransactionsFragment thisFragment) {
         this.mContext = mContext;
         this.budgetTransactionArrayList = budgetTransactionArrayList;
         this.budgetTransactionViewModel = budgetTransactionViewModel;
+        this.expenseViewModel = expenseViewModel;
+        this.thisFragment = thisFragment;
 
         sharedPreferences = mContext.getSharedPreferences(mContext.getString(R.string.shared_preferences_key),
                 Context.MODE_PRIVATE);
@@ -69,7 +80,7 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
         view.setLayoutParams(new RecyclerView.LayoutParams(width, RecyclerView.LayoutParams.WRAP_CONTENT));
 
 
-        TransactionHolder transactionHolder = new TransactionHolder(this.mContext, view);
+        TransactionHolder transactionHolder = new TransactionHolder(this.mContext, view, thisFragment, expenseViewModel);
         return transactionHolder;
     }
     //TODO CHANGE LAYOUT SO IT DISPLAY THE DATE AND IF THE DESC IS TO LARGE go ...
@@ -101,14 +112,19 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
 
         private Context mContext;
         private AlertDialog alertDialog;
+        private TransactionsFragment thisFragment;
+        private ExpenseViewModel expenseViewModel;
+        private BudgetTransaction classBudgetTransaction;
         //private BudgetTransaction transaction;
 
-        public TransactionHolder(Context mContext, View itemView) {
+        public TransactionHolder(Context mContext, View itemView, TransactionsFragment thisFragment, ExpenseViewModel expenseViewModel) {
 
             super(itemView);
 
             itemView.setOnLongClickListener(this);
             this.mContext = mContext;
+            this.thisFragment = thisFragment;
+            this.expenseViewModel = expenseViewModel;
 
             this.transitionLayout = itemView.findViewById(R.id.transactionItemLayout);
             this.transitionDummyLayout = itemView.findViewById(R.id.transactionDummyLayout);
@@ -122,6 +138,7 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
         }
 
         public void bindExpense(BudgetTransaction budgetTransaction) {
+            classBudgetTransaction = budgetTransaction;
 
             this.transitionIcon.setImageResource(budgetTransaction.getCategoryIconId());
             this.transitionCategoryName.setText(budgetTransaction.getCategoryName());
@@ -153,12 +170,39 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
                 //deleteItemBackgroundThread.execute(getAdapterPosition());
                 alertDialog.cancel();
                 budgetTransactionViewModel.deleteTransaction(budgetTransactionArrayList.get(0));
+                setBudget();
 
             });
 
             alertDialog.show();
 
             return false;
+        }
+
+        private void setBudget() {
+            //TODO FIX THIS SHIT ALSO FIND THE POSITION FROM CATEGORY NAME
+
+            List<ExpenseEntity> expenseEntities = thisFragment.getExpenseEntityList();
+            int position = geExpenseLocation(expenseEntities);
+            ExpenseEntity expenseEntity = expenseEntities.get(position);
+            expenseEntity.expenseSpent -= classBudgetTransaction.getTransactionSum();
+            expenseViewModel.updateExpense(expenseEntity);
+        }
+
+        private int geExpenseLocation(List<ExpenseEntity> expenseEntities) {
+
+            /**Check for the position by name**/
+            //TODO MAKE NAMES UNIQUE
+
+            int index = 0;
+            for(ExpenseEntity expenseEntity: expenseEntities){
+                //CHECK IF THIS transaction's expense name equals the one in the expense list
+                if(classBudgetTransaction.getCategoryName().equals(expenseEntity.expenseName)){
+                    return index;
+                }
+                index++;
+            }
+            return -1;
         }
 
         private class DeleteItemBackgroundThread extends AsyncTask<Integer, Integer, Void>{
