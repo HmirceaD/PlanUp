@@ -56,6 +56,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class TransactionsFragment extends Fragment {
 
@@ -90,6 +93,7 @@ public class TransactionsFragment extends Fragment {
     private Date maxCalendarDate;
     private DatePickerDialog datePickerDialog;
     private int positionOfExpense;
+    private ArrayList<String> expenseNames;
 
     public TransactionsFragment(){}
 
@@ -114,6 +118,8 @@ public class TransactionsFragment extends Fragment {
 
         setupViewModels();
 
+        setupExpenseList();
+
         setupSharePreferences();
 
         setupFloatingButton(view);
@@ -133,9 +139,21 @@ public class TransactionsFragment extends Fragment {
     }
 
     private void setupExpenseList() {
-
+        expenseNames = new ArrayList<>();
         expenseEntityList = new ArrayList<>();
         ExpensesBackgroundThread expenseTask = new ExpensesBackgroundThread();
+        try {/**TODO SEE HOW TO HANDLE THIS vvvv SHIT**/
+            expenseTask.get(1000, TimeUnit.MILLISECONDS);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
         expenseTask.execute();
 
     }
@@ -195,8 +213,6 @@ public class TransactionsFragment extends Fragment {
 
         AlertDialog alertDialog = dialogBuilder.create();
 
-        setupExpenseList();
-
         setAlertListeners(alertDialog, myView);
         alertDialog.show();
     }
@@ -207,6 +223,14 @@ public class TransactionsFragment extends Fragment {
         alertTransactionCategoryNameSpinner = view.findViewById(R.id.alertTransactionCategoryNameSpinner);
         ImageView alertTransactionCategoryIcon = view.findViewById(R.id.alertTransactionCategoryIcon);
         alertTransactionCategoryIcon.setImageResource(android.R.color.transparent);
+
+        //========================================
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_spinner_item, expenseNames);
+
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        alertTransactionCategoryNameSpinner.setAdapter(dataAdapter);
+        //========================================</FROM EXPENSEGETLISTTHREADTHING>
 
         positionOfExpense = 0;
 
@@ -438,20 +462,11 @@ public class TransactionsFragment extends Fragment {
 
             expenseEntityList = expenses;
 
-            ArrayList<String> expenseNames = new ArrayList<>();
-
             for(ExpenseEntity expenseEntity:expenses){
-
                 expenseNames.add(expenseEntity.expenseName);
-                //TODO TEST THAT THIS WORKS MY GUY
-                Log.e("AM PUTA MARE JAJA", Float.toString(expenseEntity.expenseSpent));
             }
 
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),
-            android.R.layout.simple_spinner_item, expenseNames);
 
-            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            alertTransactionCategoryNameSpinner.setAdapter(dataAdapter);
         }
 
         @Override
