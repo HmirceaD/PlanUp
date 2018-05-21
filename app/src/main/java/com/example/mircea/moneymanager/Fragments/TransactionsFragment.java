@@ -139,21 +139,22 @@ public class TransactionsFragment extends Fragment {
     }
 
     private void setupExpenseList() {
+
         expenseNames = new ArrayList<>();
         expenseEntityList = new ArrayList<>();
-        ExpensesBackgroundThread expenseTask = new ExpensesBackgroundThread();
-        try {/**TODO SEE HOW TO HANDLE THIS vvvv SHIT**/
-            expenseTask.get(1000, TimeUnit.MILLISECONDS);
 
+        ExpensesBackgroundThread expenseTask = new ExpensesBackgroundThread();
+
+        try {/**TODO SEE HOW TO HANDLE **/
+            expenseTask.get(1000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
-
         } catch (ExecutionException e) {
             e.printStackTrace();
-
         } catch (TimeoutException e) {
             e.printStackTrace();
         }
+
         expenseTask.execute();
 
     }
@@ -465,8 +466,6 @@ public class TransactionsFragment extends Fragment {
             for(ExpenseEntity expenseEntity:expenses){
                 expenseNames.add(expenseEntity.expenseName);
             }
-
-
         }
 
         @Override

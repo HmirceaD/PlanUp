@@ -1,6 +1,8 @@
 package com.example.mircea.moneymanager.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +29,9 @@ import static com.example.mircea.moneymanager.Database.Entities.Database.Expense
 
 public class CreatePlanExpenses extends AppCompatActivity{
 
+    //Storage
+    private SharedPreferences sharedPreferences;
+
     //Room Database
     private static ExpenseDatabase expenseDatabase;
 
@@ -42,7 +47,7 @@ public class CreatePlanExpenses extends AppCompatActivity{
 
     //Logic
     //TODO this should be initialized at run time from the db/shp
-    private float budget = 1337;
+    private float budget = 1f;
 
 
     @Override
@@ -62,6 +67,11 @@ public class CreatePlanExpenses extends AppCompatActivity{
     }
 
     private void setupUi() {
+
+        sharedPreferences = getApplicationContext().getSharedPreferences(getString(R.string.shared_preferences_key),
+                Context.MODE_PRIVATE);
+
+        budget = sharedPreferences.getFloat(getString(R.string.shared_preferences_budget_key),0f);
 
         goToSavingsButton = findViewById(R.id.goToSavingsButton);
         goToSavingsButton.setOnClickListener((View v) -> goToSavings());

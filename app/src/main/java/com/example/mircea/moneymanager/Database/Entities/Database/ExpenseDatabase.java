@@ -26,6 +26,7 @@ public abstract class ExpenseDatabase extends RoomDatabase {
     public static ExpenseDatabase getInstance(Context context){
 
         if(expenseDatabase == null){
+
             expenseDatabase = Room.databaseBuilder(context, ExpenseDatabase.class, DB_Name).build();
         }
 
